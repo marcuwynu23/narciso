@@ -1,14 +1,14 @@
 <?php
 
-namespace Narciso;
+namespace Marcuwynu23\Narciso;
 
-class Application
+final class Application
 {
 	private $viewPath;
 	public $db;
 	public function __construct()
 	{
-		$this->server_log("Narciso constructor");
+		$this->server_log("Narciso Application. ");
 	}
 
 	public function server_log($content)
