@@ -11,11 +11,11 @@ Narciso is a lightweight web library built on top of native PHP, designed to sim
 
 ## Inspiration
 
-Narciso draws its inspiration from the story of **Narcissus** in Greek mythology. In the myth, Narcissus is a figure known for his beauty, but also for his tragic demise due to his obsession with his own reflection. Similarly, Narciso emphasizes the importance of self-reflection and introspection in web development, encouraging developers to build elegant and efficient applications while appreciating the beauty of well-crafted software.
+Narciso draws its inspiration from the story of Narcissus in Greek mythology. In the myth, Narcissus is a figure known for his beauty, but also for his tragic demise due to his obsession with his own reflection. Similarly, Narciso emphasizes the importance of self-reflection and introspection in web development, encouraging developers to build elegant and efficient applications while acknowledging that perfection is not always attainable. It recognizes that not all frameworks are flawless, but aims to cultivate an appreciation for the craftsmanship and beauty of well-crafted software, despite its imperfections.
 
-Additionally, I developed this project to learn the web core of PHP native. Through Narciso, I aimed to **deepen my understanding of web development principles and practices**, honing my skills in building robust and secure web applications using PHP's native capabilities.
+Additionally, personally I developed this project to learn the web core of PHP native. Through Narciso, I aimed to **deepen my understanding of web development principles and practices**, honing my skills in building robust and secure web applications using PHP's native capabilities.
 
-Furthermore, this project is also inspired by the contemporary cultural phenomenon of narcissism and its implications on society. By addressing themes related to self-absorption and self-obsession, **Narciso seeks to raise awareness about mental health issues and promote a more balanced approach to technology and self-expression.**
+Furthermore, as an artistic movement, this project is inspired by the contemporary cultural phenomenon of narcissism and its implications on society. By addressing themes related to self-absorption and self-obsession, Narciso seeks to raise awareness about mental health issues and promote a more balanced approach to technology and self-expression.
 
 ## Features
 
