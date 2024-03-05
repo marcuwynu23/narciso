@@ -1,5 +1,12 @@
+<div align="center">
+
 # Narciso
 
+[![GitHub license](https://img.shields.io/github/license/marcuwynu23/narciso)](https://github.com/marcuwynu23/narciso/blob/main/LICENSE)
+[![GitHub stars](https://img.shields.io/github/stars/marcuwynu23/narciso)](https://github.com/marcuwynu23/narciso/stargazers)
+[![GitHub issues](https://img.shields.io/github/issues/marcuwynu23/narciso)](https://github.com/marcuwynu23/narciso/issues)
+
+</div>
 Narciso is a lightweight web library built on top of native PHP, designed to simplify and enhance web development tasks. It provides developers with a set of tools and functionalities to streamline common web development processes such as handling HTTP requests, managing sessions, accessing databases, and generating dynamic content.
 
 ## Inspiration
