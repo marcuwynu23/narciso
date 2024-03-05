@@ -1,0 +1,17 @@
+{
+  "name": "marcuwynu23/narciso",
+  "description": "'Narciso' is a web library built on top of native PHP, designed to provide developers with a set of tools and functionalities to simplify and enhance web development tasks. It aims to streamline common web development processes such as handling HTTP requests, managing sessions, accessing databases, and generating dynamic content.",
+  "type": "library",
+  "require": {},
+  "autoload": {
+    "psr-4": {
+      "Marcuwynu23\\Narciso\\": "src/"
+    }
+  },
+  "authors": [
+    {
+      "name": "Mark Wayne Buncaras Menorca",
+      "email": "marcuwynu23@gmail.com"
+    }
+  ]
+}
