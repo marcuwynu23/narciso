@@ -92,4 +92,4 @@ Contributions are welcome! If you have any suggestions, improvements, or new gui
 
 ---
 
-We hope these programming setups, installation guides, and tweaks help make your programming journey smoother and more enjoyable! Happy coding!
+Happy coding!
