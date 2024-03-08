@@ -86,6 +86,26 @@ $app->route('GET', '/json', function () use ($app) {
 
 ```
 
+# How to Run
+
+direct running using php cli:
+
+```sh
+php -S localhost:8080 -t <entry_point_directory>
+```
+
+using auto cli by create .autofile script:
+
+```sh
++ php -S localhost:8080 -t <entry_point_directory>
+```
+
+then running it:
+
+```sh
+auto
+```
+
 ## Contributing
 
 Contributions are welcome! If you have any suggestions, improvements, or new guides to add, feel free to contribute to this repository.

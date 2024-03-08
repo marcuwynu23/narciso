@@ -8,10 +8,10 @@ final class Application
 	public $db;
 	public function __construct()
 	{
-		$this->server_log("Narciso Application. ");
+		$this->serverLog("Narciso Application. ");
 	}
 
-	public function server_log($content)
+	public function serverLog($content)
 	{
 		error_log(print_r($content, true));
 	}
@@ -27,9 +27,22 @@ final class Application
 	}
 	public function handleCORS()
 	{
-		header("Access-Control-Allow-Origin: *");
-		header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE");
-		header("Access-Control-Allow-Headers: Content-Type");
+		if (isset($_SERVER['HTTP_ORIGIN'])) {
+			header("Access-Control-Allow-Origin: {$_SERVER['HTTP_ORIGIN']}");
+			header('Access-Control-Allow-Credentials: true');
+			header('Access-Control-Max-Age: 86400');
+		}
+		// Access-Control headers are received during OPTIONS requests
+		if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
+
+			if (isset($_SERVER['HTTP_ACCESS_CONTROL_REQUEST_METHOD']))
+				header("Access-Control-Allow-Methods: GET, POST, OPTIONS");
+
+			if (isset($_SERVER['HTTP_ACCESS_CONTROL_REQUEST_HEADERS']))
+				header("Access-Control-Allow-Headers: {$_SERVER['HTTP_ACCESS_CONTROL_REQUEST_HEADERS']}");
+
+			exit(0);
+		}
 	}
 
 	public function handleDatabase($config)
