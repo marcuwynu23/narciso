@@ -9,6 +9,10 @@
 </div>
 Narciso is a lightweight web library built on top of native PHP, designed to simplify and enhance web development tasks. It provides developers with a set of tools and functionalities to streamline common web development processes such as handling HTTP requests, managing sessions, accessing databases, and generating dynamic content.
 
+
+
+packagist: https://packagist.org/packages/marcuwynu23/narciso
+
 ## Inspiration
 
 Narciso draws its inspiration from the story of Narcissus in Greek mythology. In the myth, Narcissus is a figure known for his beauty, but also for his tragic demise due to his obsession with his own reflection. Similarly, Narciso emphasizes the importance of self-reflection and introspection in web development, encouraging developers to build elegant and efficient applications while acknowledging that perfection is not always attainable. It recognizes that not all frameworks are flawless, but aims to cultivate an appreciation for the craftsmanship and beauty of well-crafted software, despite its imperfections.
