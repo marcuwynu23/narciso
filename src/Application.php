@@ -12,6 +12,9 @@ final class Application
 	private $viewPath;
 	public $db;
 
+	/** @var bool|string|null false = remove X-Powered-By, string = set value (e.g. "Express" or ""), null = don't touch */
+	private $poweredBy = null;
+
 	/** @var array<MiddlewareInterface|callable> */
 	private array $middlewares = [];
 
@@ -21,6 +24,18 @@ final class Application
 	public function __construct()
 	{
 		$this->serverLog("Narciso Application.");
+	}
+
+	/**
+	 * Control the X-Powered-By / technology signature (Express-style).
+	 * Use this to obfuscate or silence the stack (e.g. hide that it's PHP).
+	 *
+	 * @param bool|string|null $value false = remove header (silent/obfuscated), "" = blank value, "Express" etc. = custom, null = leave default
+	 */
+	public function setPoweredBy($value): self
+	{
+		$this->poweredBy = $value;
+		return $this;
 	}
 
 	public function serverLog($content)
@@ -211,6 +226,12 @@ final class Application
 	 */
 	public function run(): void
 	{
+		if ($this->poweredBy === false) {
+			header_remove('X-Powered-By');
+		} elseif (is_string($this->poweredBy)) {
+			header('X-Powered-By: ' . $this->poweredBy);
+		}
+
 		$runner = function () {
 			$matched = $this->matchRoute();
 			if ($matched !== null) {
@@ -254,5 +275,96 @@ final class Application
 		http_response_code($statusCode);
 		header('Content-Type: application/json; charset=utf-8');
 		echo json_encode($data);
+	}
+
+	/**
+	 * Send API response as JSON or XML (legacy). Format can be forced or auto-detected from
+	 * query param (?format=json|xml) or Accept header.
+	 *
+	 * @param array|object $data Data to send (array or object; for XML, converted to tree).
+	 * @param array $options 'format' => 'json'|'xml'|null (null = auto), 'statusCode' => int, 'root' => string (XML root tag), 'xmlItemName' => string (tag for list items)
+	 */
+	public function sendAPI($data, array $options = []): void
+	{
+		$format = $options['format'] ?? $this->getPreferredApiFormat();
+		$statusCode = (int) ($options['statusCode'] ?? 200);
+		$root = $options['root'] ?? 'response';
+		$xmlItemName = $options['xmlItemName'] ?? 'item';
+
+		$data = is_object($data) ? (array) $data : $data;
+		if (!is_array($data)) {
+			$data = ['data' => $data];
+		}
+
+		http_response_code($statusCode);
+
+		if ($format === 'xml') {
+			header('Content-Type: application/xml; charset=utf-8');
+			echo $this->arrayToXml($data, $root, $xmlItemName);
+			return;
+		}
+
+		header('Content-Type: application/json; charset=utf-8');
+		echo json_encode($data);
+	}
+
+	/**
+	 * Detect preferred API format from query string (?format=json|xml) or Accept header.
+	 * Returns 'json' or 'xml'; defaults to 'json'.
+	 */
+	public function getPreferredApiFormat(): string
+	{
+		$query = $_GET['format'] ?? null;
+		if (is_string($query)) {
+			$q = strtolower(trim($query));
+			if ($q === 'xml') {
+				return 'xml';
+			}
+			if ($q === 'json') {
+				return 'json';
+			}
+		}
+		$accept = $_SERVER['HTTP_ACCEPT'] ?? '';
+		if (stripos($accept, 'application/xml') !== false || stripos($accept, 'text/xml') !== false) {
+			return 'xml';
+		}
+		return 'json';
+	}
+
+	/**
+	 * Convert array to XML string (legacy API support). Lists use xmlItemName for each entry.
+	 */
+	public function arrayToXml(array $data, string $rootTag = 'response', string $itemTag = 'item'): string
+	{
+		$xml = new \SimpleXMLElement('<?xml version="1.0" encoding="UTF-8"?><' . $rootTag . '/>');
+		$this->arrayToXmlRecurse($data, $xml, $itemTag);
+		return $xml->asXML();
+	}
+
+	/** @param \SimpleXMLElement $xml */
+	private function arrayToXmlRecurse(array $data, $xml, string $itemTag): void
+	{
+		$keys = array_keys($data);
+		$isList = $keys === range(0, count($data) - 1);
+		if ($isList && count($data) > 0) {
+			foreach ($data as $item) {
+				if (is_array($item)) {
+					$child = $xml->addChild($itemTag);
+					$this->arrayToXmlRecurse($item, $child, $itemTag);
+				} else {
+					$xml->addChild($itemTag, htmlspecialchars((string) $item, ENT_XML1, 'UTF-8'));
+				}
+			}
+			return;
+		}
+		foreach ($data as $key => $value) {
+			$name = is_int($key) ? $itemTag : $key;
+			if (is_array($value)) {
+				$child = $xml->addChild($name);
+				$this->arrayToXmlRecurse($value, $child, $itemTag);
+			} else {
+				$xml->addChild($name, htmlspecialchars((string) $value, ENT_XML1, 'UTF-8'));
+			}
+		}
 	}
 }

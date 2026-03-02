@@ -22,6 +22,7 @@ Narciso is a lightweight web library built on top of native PHP, inspired by **F
 - **Cross-Origin (CORS)** — Configurable origins, methods, and headers; no more guessing.
 - **Rate limiting** — Built-in per-IP rate limit middleware; plug in Redis later for production.
 - **Security** — Optional security headers (X-Frame-Options, X-Content-Type-Options, etc.) and secure defaults.
+- **Technology signature** — Make the stack silent or changeable: remove `X-Powered-By`, set it blank, or fake it (e.g. "Express") so the server type is obfuscated.
 - **HTTP** — JSON requests/responses, redirects, views, session handling.
 
 ---
@@ -44,6 +45,9 @@ use Marcuwynu23\Narciso\Application;
 
 $app = new Application();
 $app->setViewPath(__DIR__ . '/views');
+
+// Optional: hide or change technology signature (X-Powered-By)
+$app->setPoweredBy(false);   // silent, or setPoweredBy('Express') etc.
 
 // Optional: session
 $app->handleSession();
@@ -197,6 +201,29 @@ When exceeded, responses are `429 Too Many Requests` with a `Retry-After` header
 - **Custom headers:** `$app->useSecurityHeaders(['X-Custom' => 'value']);`
 - **CORS** — Prefer `useCors()` with explicit origins instead of `*` when using credentials.
 - **Database** — Use parameterized queries with `$app->db`; never concatenate user input into SQL.
+- **Technology signature (X-Powered-By)** — Like Express’s `app.disable('x-powered-by')`: call `$app->setPoweredBy(false)` to remove the header (silent/obfuscated), `$app->setPoweredBy('')` for a blank value, or `$app->setPoweredBy('Express')` to send a custom value so the server type is not revealed.
+
+---
+
+## Technology signature (X-Powered-By)
+
+Control or hide the `X-Powered-By` header so the server technology (e.g. PHP) is **silent** or **changeable** (Express-style):
+
+```php
+// Remove the header (obfuscated / silent)
+$app->setPoweredBy(false);
+
+// Send a blank value
+$app->setPoweredBy('');
+
+// Send a custom value (e.g. pretend another stack)
+$app->setPoweredBy('Express');
+
+// Leave default (don't touch; default behavior)
+$app->setPoweredBy(null);  // or omit
+```
+
+Applied automatically at the start of `run()`.
 
 ---
 
@@ -210,6 +237,37 @@ $app->route('GET', '/posts/:slug', function ($app, $params) {
     $app->json(['slug' => $slug]);
 });
 ```
+
+---
+
+## API response (JSON or XML)
+
+Use `$app->sendAPI()` to respond as **JSON** or **XML** (legacy). Format can be forced or **auto-detected** from query param (`?format=json` or `?format=xml`) or `Accept` header.
+
+```php
+// Auto-detect from ?format=xml or Accept: application/xml
+$app->route('GET', '/api/users', function ($app) {
+    $app->sendAPI(['users' => [['id' => 1, 'name' => 'Alice']]]);
+});
+
+// Force JSON
+$app->sendAPI($data, ['format' => 'json']);
+
+// Force XML (legacy)
+$app->sendAPI($data, ['format' => 'xml']);
+
+// Options: root tag, list item tag, status code
+$app->sendAPI($data, [
+    'format'       => 'xml',
+    'root'         => 'data',
+    'xmlItemName'  => 'user',
+    'statusCode'   => 200,
+]);
+```
+
+- **Default format** is JSON; use `?format=xml` or `Accept: application/xml` for XML.
+- **arrayToXml** is public for custom XML: `$app->arrayToXml($array, 'rootTag', 'itemTag')`.
+- **getPreferredApiFormat()** returns `'json'` or `'xml'` from the current request.
 
 ---
 
@@ -238,6 +296,25 @@ auto
 ## Inspiration
 
 Narciso is inspired by the myth of Narcissus and by the simplicity of **FastAPI** and **Flask**. It focuses on clarity and minimal setup: middlewares, database, CORS, rate limit, and security are a few method calls away, so you can spend time on your app instead of framework configuration.
+
+---
+
+## Testing
+
+Tests are test-driven and cover all main functionality: routing (exact and path params), middlewares (security, CORS, rate limit), `setPoweredBy`, JSON/render responses, 404, database (SQLite), and custom middlewares.
+
+**Run the test suite:**
+
+```sh
+composer install
+vendor/bin/phpunit
+```
+
+Or from project root:
+
+```sh
+php test/run_tests.php
+```
 
 ---
 
