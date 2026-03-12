@@ -155,6 +155,11 @@ final class Application
 			}
 			$this->db = $db;
 		} elseif ($type === 'sqlite') {
+			if (!class_exists(\SQLite3::class)) {
+				throw new \RuntimeException(
+					'SQLite is not available. Enable the sqlite3 extension in php.ini (e.g. extension=sqlite3 on Windows, or install php-sqlite3 package).'
+				);
+			}
 			$this->db = new \SQLite3($database);
 		} else {
 			throw new \InvalidArgumentException("Unsupported database type: $type");
