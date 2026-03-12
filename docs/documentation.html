@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Documentation — Narciso</title>
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/themes/prism.min.css">
+</head>
+<body>
+  <nav class="nav">
+    <a href="index.html" class="nav__brand"><img src="logo.svg" alt="" class="nav__logo" width="28" height="28">Narciso</a>
+    <button type="button" class="nav__toggle" aria-label="Toggle menu" id="navToggle" aria-expanded="false">
+      <span class="nav__toggle-line"></span>
+      <span class="nav__toggle-line"></span>
+      <span class="nav__toggle-line"></span>
+    </button>
+    <div class="nav__overlay" id="navOverlay" aria-hidden="true"></div>
+    <ul class="nav__links" id="navLinks">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="documentation.html">Documentation</a></li>
+      <li><a href="https://github.com/marcuwynu23/narciso" class="nav__github" target="_blank" rel="noopener noreferrer">GitHub</a></li>
+    </ul>
+  </nav>
+
+  <main class="main container-fluid">
+    <div class="doc-layout">
+      <aside class="doc-sidebar" aria-label="Documentation sections">
+        <p class="doc-sidebar__title">On this page</p>
+        <nav>
+          <ul>
+            <li><a href="#installation">Installation</a></li>
+            <li><a href="#quick-start">Quick start</a></li>
+            <li><a href="#application">Application</a></li>
+            <li><a href="#routing">Routing</a></li>
+            <li><a href="#middleware">Middleware</a></li>
+            <li><a href="#database">Database</a></li>
+            <li><a href="#request">Request</a></li>
+            <li><a href="#responses">Responses</a></li>
+            <li><a href="#views">Views</a></li>
+            <li><a href="#redirect">Redirect</a></li>
+            <li><a href="#technology-signature">Technology signature</a></li>
+            <li><a href="#session">Session</a></li>
+            <li><a href="#full-example">Full example</a></li>
+          </ul>
+        </nav>
+      </aside>
+      <div class="doc-content">
+    <h1>Documentation</h1>
+    <p>Complete implementation guide for Narciso: routing, middleware, database, API, and views.</p>
+
+    <section class="doc-section" id="installation">
+      <h2>Installation</h2>
+      <p>Install via Composer:</p>
+      <div class="install-card__code" data-copy="composer require marcuwynu23/narciso">
+        <pre class="install-card__pre"><code class="language-bash">composer require marcuwynu23/narciso</code></pre>
+        <button type="button" class="install-card__copy" aria-label="Copy command">Copy</button>
+      </div>
+      <p>Requires PHP 7.4+ (or as required by your environment). No other dependencies.</p>
+    </section>
+
+    <section class="doc-section" id="quick-start">
+      <h2>Quick start</h2>
+      <pre><code class="language-php">&lt;?php
+require_once __DIR__ . '/vendor/autoload.php';
+
+use Marcuwynu23\Narciso\Application;
+
+$app = new Application();
+$app->setViewPath(__DIR__ . '/views');
+
+$app->route('GET', '/', function ($app) {
+    $app->json(['message' => 'Welcome to Narciso']);
+});
+
+$app->run();</code></pre>
+      <p>Run with PHP built-in server:</p>
+      <pre><code class="language-bash">php -S localhost:8080 -t public</code></pre>
+      <p>(or your document root).</p>
+    </section>
+
+    <section class="doc-section" id="application">
+      <h2>Application</h2>
+      <p>The <code>Application</code> class is the single entry point. Key methods:</p>
+      <ul>
+        <li><code>setViewPath(string $path)</code> — Directory for view files (e.g. <code>views/</code>).</li>
+        <li><code>run()</code> — Execute middleware stack and dispatch to the matching route. Call once at the end of your entry script.</li>
+      </ul>
+      <p>When no route matches, Narciso returns <code>404</code> with <code>Content-Type: application/json</code> and body <code>{"error":"Not Found","path":"/requested-path"}</code>.</p>
+    </section>
+
+    <section class="doc-section" id="routing">
+      <h2>Routing</h2>
+      <h3>Registering routes</h3>
+      <p><code>route(string $method, string $path, callable $callback): self</code></p>
+      <p><strong>Method:</strong> <code>GET</code>, <code>POST</code>, <code>PUT</code>, <code>PATCH</code>, <code>DELETE</code> (case-insensitive).</p>
+      <p><strong>Path:</strong> Exact path or named parameters with <code>:name</code> (e.g. <code>/users/:id</code>, <code>/posts/:slug/comments/:cid</code>). Param names must match <code>[a-zA-Z_][a-zA-Z0-9_]*</code>.</p>
+      <p><strong>Callback:</strong> <code>function (Application $app, array $params)</code>. <code>$params</code> contains captured path parameters (e.g. <code>['id' => '42']</code>).</p>
+      <h3>Examples</h3>
+      <pre><code class="language-php">// Exact path
+$app->route('GET', '/', function ($app) {
+    $app->json(['message' => 'Hello']);
+});
+
+// Path parameters
+$app->route('GET', '/users/:id', function ($app, $params) {
+    $app->json(['user_id' => $params['id']]);
+});
+
+$app->route('GET', '/posts/:slug/comments/:cid', function ($app, $params) {
+    $app->json([
+        'post_slug'  => $params['slug'],
+        'comment_id' => $params['cid'],
+    ]);
+});
+
+// POST with JSON body
+$app->route('POST', '/echo', function ($app) {
+    $body = $app->requestPost();
+    $app->json(['received' => $body]);
+});</code></pre>
+      <p>Matching uses the request URI path (without query string). With the built-in server, the script name may be part of the path (e.g. <code>/index.php/</code>); design your routes accordingly or use a front controller.</p>
+    </section>
+
+    <section class="doc-section" id="middleware">
+      <h2>Middleware</h2>
+      <p>Middleware runs in order before the route handler. First added = first executed (before request), last runs closest to the response.</p>
+      <h3>use($middleware)</h3>
+      <p>Accepts:</p>
+      <ul>
+        <li><strong>Callable:</strong> <code>function ($app, $next) { ...; return $next(); }</strong>. Call <code>$next()</code> to continue the pipeline.</li>
+        <li><strong>MiddlewareInterface:</strong> Class with <code>handle(callable $next)</code> that calls <code>$next()</code> to continue.</li>
+      </ul>
+      <pre><code class="language-php">$app->use(function ($app, $next) {
+    // before
+    $result = $next();
+    // after
+    return $result;
+});
+
+$app->use(new class implements \Marcuwynu23\Narciso\Middleware\MiddlewareInterface {
+    public function handle(callable $next) {
+        // before
+        return $next();
+    }
+});</code></pre>
+      <h3>useSecurityHeaders(?array $headers = null)</h3>
+      <p>Adds security-related HTTP headers to every response. Default headers:</p>
+      <ul>
+        <li><code>X-Content-Type-Options: nosniff</code></li>
+        <li><code>X-Frame-Options: SAMEORIGIN</code></li>
+        <li><code>X-XSS-Protection: 1; mode=block</code></li>
+        <li><code>Referrer-Policy: strict-origin-when-cross-origin</code></li>
+        <li><code>Permissions-Policy: geolocation=(), microphone=(), camera=()</code></li>
+      </ul>
+      <p>Pass a custom <code>['Header-Name' => 'value']</code> array to override, or <code>null</code> for defaults.</p>
+      <h3>useCors(...)</h3>
+      <p>Configurable CORS middleware. Parameters:</p>
+      <ul>
+        <li><code>$origins</code> — e.g. <code>['*']</code> or <code>['https://app.example.com']</code></li>
+        <li><code>$methods</code> — e.g. <code>['GET','POST','PUT','PATCH','DELETE','OPTIONS']</code></li>
+        <li><code>$headers</code> — e.g. <code>['Content-Type','Authorization','X-Requested-With','Accept']</code></li>
+        <li><code>$credentials</code> — allow credentials (default <code>false</code>)</li>
+        <li><code>$maxAge</code> — preflight cache in seconds (default <code>86400</code>)</li>
+      </ul>
+      <pre><code class="language-php">$app->useCors(
+    ['*'],
+    ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+    ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept'],
+    false,
+    86400
+);</code></pre>
+      <p>On <code>OPTIONS</code> requests the middleware responds with <code>204</code> and exits.</p>
+      <h3>useRateLimit(int $maxRequests, int $windowSeconds)</h3>
+      <p>Rate limit per client (by IP; respects <code>X-Forwarded-For</code>). In-memory store — use Redis or similar in production for multi-process.</p>
+      <pre><code class="language-php">$app->useRateLimit(60, 60); // 60 requests per 60 seconds</code></pre>
+      <p>When exceeded, responds with <code>429 Too Many Requests</code>, <code>Retry-After</code> header, and JSON body <code>{"error":"Too Many Requests","retry_after":60}</code>.</p>
+    </section>
+
+    <section class="doc-section" id="database">
+      <h2>Database</h2>
+      <p><code>handleDatabase(array $config): self</code></p>
+      <p>Connects and exposes <code>$app->db</code> (mysqli for MySQL, SQLite3 for SQLite).</p>
+      <h3>MySQL</h3>
+      <pre><code class="language-php">$app->handleDatabase([
+    'type'     => 'mysql',
+    'host'     => 'localhost',
+    'database' => 'mydb',
+    'user'     => 'user',      // or 'username'
+    'password' => 'secret',
+]);</code></pre>
+      <p><code>$app->db</code> is a <code>mysqli</code> instance. Throws <code>RuntimeException</code> on connection failure.</p>
+      <h3>SQLite</h3>
+      <pre><code class="language-php">$app->handleDatabase([
+    'type'     => 'sqlite',
+    'database' => '/path/to/file.sqlite',  // or ':memory:'
+]);</code></pre>
+      <p><code>$app->db</code> is an <code>SQLite3</code> instance. Requires the <code>sqlite3</code> extension.</p>
+    </section>
+
+    <section class="doc-section" id="request">
+      <h2>Request</h2>
+      <ul>
+        <li><code>requestPost(): ?array</code> — Reads <code>php://input</code>, JSON-decodes, and returns an array or <code>null</code> if invalid/empty. Use for POST/PUT/PATCH JSON bodies.</li>
+        <li><code>requestRaw(): string</code> — Returns the raw request body as a string.</li>
+      </ul>
+    </section>
+
+    <section class="doc-section" id="responses">
+      <h2>Responses</h2>
+      <h3>json($data, int $statusCode = 200)</h3>
+      <p>Sets <code>Content-Type: application/json; charset=utf-8</code>, status code, and outputs <code>json_encode($data)</code>.</p>
+      <h3>sendAPI($data, array $options = [])</h3>
+      <p>Responds as JSON or XML. Format can be forced or auto-detected from <code>?format=json|xml</code> or <code>Accept</code> header. Options:</p>
+      <ul>
+        <li><code>format</code> — <code>'json'</code>, <code>'xml'</code>, or <code>null</code> (auto)</li>
+        <li><code>statusCode</code> — HTTP status (default <code>200</code>)</li>
+        <li><code>root</code> — XML root tag (default <code>'response'</code>)</li>
+        <li><code>xmlItemName</code> — Tag name for list items (default <code>'item'</code>)</li>
+      </ul>
+      <p><code>$data</code> can be array or object; for XML it is converted to a tree. Numeric arrays become repeated <code>xmlItemName</code> elements.</p>
+      <h3>getPreferredApiFormat(): string</h3>
+      <p>Returns <code>'json'</code> or <code>'xml'</code> from query <code>?format=</code> or <code>Accept</code> header. Default <code>'json'</code>.</p>
+      <h3>arrayToXml(array $data, string $rootTag, string $itemTag): string</h3>
+      <p>Public helper to convert an array to an XML string (UTF-8, <code>SimpleXMLElement</code>).</p>
+    </section>
+
+    <section class="doc-section" id="views">
+      <h2>Views</h2>
+      <p><code>setViewPath(string $path)</code> — Base directory for view files.</p>
+      <p><code>render(string $view, array $data = []): void</code> — Includes a PHP file from the view path. <code>$view</code> is the path without <code>.php</code> (e.g. <code>/home.view</code> or <code>/about/about.view</code>). Variables are extracted into the view (e.g. <code>'message' => 'Hi'</code> becomes <code>$message</code>).</p>
+      <pre><code class="language-php">$app->setViewPath(__DIR__ . '/views');
+$app->route('GET', '/', function ($app) {
+    $app->render('/home.view', ['message' => 'Hello']);
+});
+// includes views/home.view.php with $message</code></pre>
+    </section>
+
+    <section class="doc-section" id="redirect">
+      <h2>Redirect</h2>
+      <p><code>redirect(string $url, int $statusCode = 302): void</code> — Sends <code>Location</code> header and <code>exit</code>s. Use for redirects.</p>
+    </section>
+
+    <section class="doc-section" id="technology-signature">
+      <h2>Technology signature (X-Powered-By)</h2>
+      <p><code>setPoweredBy($value): self</code></p>
+      <ul>
+        <li><code>false</code> — Remove <code>X-Powered-By</code> (recommended for production).</li>
+        <li><code>''</code> — Send blank value.</li>
+        <li><code>'Express'</code> (or any string) — Custom value.</li>
+        <li><code>null</code> — Leave server default unchanged.</li>
+      </ul>
+      <p>Applied when <code>run()</code> is called.</p>
+    </section>
+
+    <section class="doc-section" id="session">
+      <h2>Session</h2>
+      <p><code>handleSession(string $name = "Narciso"): self</code> — Sets session name and calls <code>session_start()</code>. Use when you need <code>$_SESSION</code>.</p>
+      <p class="note"><strong>Deprecated CORS:</strong> <code>handleCORS()</code> reflects the request <code>Origin</code> and allows credentials. Prefer <code>useCors()</code> for configurable CORS.</p>
+    </section>
+
+    <section class="doc-section" id="full-example">
+      <h2>Full example</h2>
+      <p>Combining routing, middleware, database, API, and views:</p>
+      <pre><code class="language-php">&lt;?php
+require_once __DIR__ . '/vendor/autoload.php';
+
+use Marcuwynu23\Narciso\Application;
+
+$app = new Application();
+$app->setViewPath(__DIR__ . '/views');
+
+$app->setPoweredBy(false);
+$app->handleSession('MyApp');
+$app->useSecurityHeaders();
+$app->useCors(['*'], ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'], ['Content-Type', 'Authorization']);
+$app->useRateLimit(60, 60);
+
+$app->handleDatabase(['type' => 'sqlite', 'database' => ':memory:']);
+$app->db->exec('CREATE TABLE IF NOT EXISTS items (id INTEGER PRIMARY KEY, name TEXT)');
+$app->db->exec("INSERT OR IGNORE INTO items (id, name) VALUES (1, 'Alpha'), (2, 'Beta')");
+
+$app->route('GET', '/', function ($app) {
+    $app->json(['app' => 'Narciso', 'routes' => ['GET /api', 'GET /api/items', 'GET /page']]);
+});
+
+$app->route('GET', '/api', function ($app) {
+    $app->sendAPI(['message' => 'API', 'time' => date('c')]);
+});
+
+$app->route('GET', '/api/items', function ($app) {
+    $res = $app->db->query('SELECT id, name FROM items');
+    $rows = [];
+    while ($row = $res->fetchArray(SQLITE3_ASSOC)) $rows[] = $row;
+    $app->sendAPI(['items' => $rows]);
+});
+
+$app->route('GET', '/api/items/:id', function ($app, $params) {
+    $id = (int) $params['id'];
+    $stmt = $app->db->prepare('SELECT id, name FROM items WHERE id = :id');
+    $stmt->bindValue(':id', $id, SQLITE3_INTEGER);
+    $r = $stmt->execute();
+    $row = $r->fetchArray(SQLITE3_ASSOC);
+    if (!$row) { $app->json(['error' => 'Not found'], 404); return; }
+    $app->sendAPI($row);
+});
+
+$app->route('GET', '/page', function ($app) {
+    $app->render('/home.view', ['message' => 'Hello']);
+});
+
+$app->run();</code></pre>
+    </section>
+
+    <footer class="footer">
+      <div class="footer__inner">
+        <div class="footer__brand">
+          <img src="logo.svg" alt="" class="footer__logo" width="32" height="32">
+          <span class="footer__name">Narciso</span>
+          <p class="footer__tagline">A lightweight PHP web library. Build simple backends without a full framework.</p>
+        </div>
+        <div class="footer__links">
+          <h4 class="footer__heading">Quick links</h4>
+          <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="documentation.html">Documentation</a></li>
+            <li><a href="https://github.com/marcuwynu23/narciso" target="_blank" rel="noopener noreferrer">GitHub</a></li>
+          </ul>
+        </div>
+        <div class="footer__links">
+          <h4 class="footer__heading">Resources</h4>
+          <ul>
+            <li><a href="documentation.html#installation">Installation</a></li>
+            <li><a href="documentation.html#quick-start">Quick start</a></li>
+            <li><a href="documentation.html#routing">Routing</a></li>
+            <li><a href="documentation.html#database">Database</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer__bottom">
+        <p class="footer__copyright">© <span id="footer-year">2025</span> Narciso. By <a href="https://github.com/marcuwynu23">Marcuwynu23</a>. Native PHP, no framework required.</p>
+      </div>
+    </footer>
+      </div>
+    </div>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/prism.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-php.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-bash.min.js"></script>
+  <script>
+    (function () {
+      var toggle = document.getElementById('navToggle');
+      var links = document.getElementById('navLinks');
+      var overlay = document.getElementById('navOverlay');
+      function setMenuOpen(open) {
+        var isOpen = !!open;
+        if (links) {
+          links.classList.toggle('is-open', isOpen);
+        }
+        if (toggle) {
+          toggle.classList.toggle('nav__toggle--open', isOpen);
+          toggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+        }
+        if (overlay) {
+          overlay.classList.toggle('nav__overlay--open', isOpen);
+          overlay.setAttribute('aria-hidden', isOpen ? 'false' : 'true');
+        }
+        document.body.style.overflow = isOpen ? 'hidden' : '';
+      }
+      if (toggle && links) {
+        toggle.addEventListener('click', function () {
+          setMenuOpen(!links.classList.contains('is-open'));
+        });
+      }
+      if (overlay) {
+        overlay.addEventListener('click', function () {
+          setMenuOpen(false);
+        });
+      }
+      if (typeof Prism !== 'undefined') Prism.highlightAll();
+      document.querySelectorAll('.install-card__code').forEach(function (wrap) {
+        var btn = wrap.querySelector('.install-card__copy');
+        if (!btn) return;
+        btn.addEventListener('click', function () {
+          var text = wrap.getAttribute('data-copy') || (wrap.querySelector('code') && wrap.querySelector('code').textContent.trim());
+          if (!text) return;
+          navigator.clipboard.writeText(text).then(function () {
+            btn.textContent = 'Copied!';
+            setTimeout(function () { btn.textContent = 'Copy'; }, 2000);
+          });
+        });
+      });
+      var yearEl = document.getElementById('footer-year');
+      if (yearEl) yearEl.textContent = new Date().getFullYear();
+    })();
+  </script>
+</body>
+</html>
