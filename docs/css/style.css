@@ -383,9 +383,10 @@ body {
 /* Container fluid — full width on all pages */
 .container-fluid {
   width: 100%;
-  max-width: none;
+  max-width: 100%;
   margin: 0;
   padding: 2rem 1.25rem 4rem;
+  box-sizing: border-box;
 }
 
 @media (min-width: 640px) {
@@ -427,7 +428,9 @@ body {
   gap: 0;
   align-items: flex-start;
   width: 100%;
-  max-width: none;
+  max-width: 100%;
+  min-width: 0;
+  overflow-x: hidden;
 }
 
 .doc-sidebar {
@@ -483,10 +486,17 @@ body {
 .doc-content {
   flex: 1;
   min-width: 0;
+  max-width: 100%;
   min-height: 0;
   padding: 0;
   display: flex;
   flex-direction: column;
+  overflow-x: hidden;
+}
+
+.doc-content > * {
+  max-width: 100%;
+  min-width: 0;
 }
 
 @media (max-width: 640px) {
@@ -637,6 +647,41 @@ body {
     word-break: break-word;
     overflow-wrap: break-word;
   }
+
+  /* Fit to viewport: prevent any doc content from overflowing */
+  .doc-content {
+    width: 100%;
+  }
+
+  .doc-section {
+    min-width: 0;
+  }
+
+  .doc-section pre {
+    width: 100%;
+    box-sizing: border-box;
+  }
+}
+
+/* Extra small devices: tighter doc padding */
+@media (max-width: 380px) {
+  .main.container-fluid {
+    padding-left: max(1rem, env(safe-area-inset-left));
+    padding-right: max(1rem, env(safe-area-inset-right));
+  }
+
+  .doc-content > h1 {
+    font-size: 1.35rem;
+  }
+
+  .doc-section > h2 {
+    font-size: 1.15rem;
+  }
+
+  pre {
+    padding: 0.75rem 1rem;
+    font-size: 0.75rem;
+  }
 }
 
 /* Typography */
@@ -687,8 +732,12 @@ pre {
   border: 1px solid var(--border);
   border-radius: var(--radius);
   overflow-x: auto;
+  overflow-y: hidden;
+  max-width: 100%;
+  min-width: 0;
   font-size: 0.8125rem;
   line-height: 1.5;
+  -webkit-overflow-scrolling: touch;
 }
 
 pre code {
@@ -696,6 +745,7 @@ pre code {
   background: none;
   border: none;
   font-size: inherit;
+  min-width: 0;
 }
 
 /* Sections in docs */
@@ -870,6 +920,8 @@ pre code {
 
 .install-card__code {
   position: relative;
+  max-width: 100%;
+  min-width: 0;
 }
 
 .install-card__pre {
@@ -879,7 +931,10 @@ pre code {
   border: 1px solid var(--border);
   border-radius: var(--radius);
   overflow-x: auto;
+  max-width: 100%;
+  min-width: 0;
   font-size: 0.9375rem;
+  -webkit-overflow-scrolling: touch;
 }
 
 .install-card__pre code {
