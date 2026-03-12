@@ -9,7 +9,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/style.css">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/themes/prism.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css">
 </head>
 <body>
   <nav class="nav" id="nav">
@@ -41,7 +41,7 @@
     <section class="install-card">
       <h2 class="install-card__title">Install</h2>
       <div class="install-card__code" data-copy="composer require marcuwynu23/narciso">
-        <pre class="install-card__pre"><code class="language-bash">composer require marcuwynu23/narciso</code></pre>
+        <pre class="install-card__pre language-bash" tabindex="0"><code class="language-bash">composer require marcuwynu23/narciso</code></pre>
         <button type="button" class="install-card__copy" aria-label="Copy command">Copy</button>
       </div>
     </section>
@@ -99,8 +99,9 @@
   <button type="button" class="scroll-top" id="scrollTopBtn" aria-label="Scroll to top" title="Scroll to top">
     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
   </button>
-  <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/prism.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-bash.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/php.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/bash.min.js"></script>
   <script>
     (function () {
       var toggle = document.getElementById('navToggle');
@@ -131,7 +132,10 @@
           setMenuOpen(false);
         });
       }
-      if (typeof Prism !== 'undefined') Prism.highlightAll();
+      if (typeof hljs !== 'undefined') {
+        hljs.highlightAll();
+        window.addEventListener('load', function () { hljs.highlightAll(); });
+      }
       document.querySelectorAll('.install-card__code').forEach(function (wrap) {
         var btn = wrap.querySelector('.install-card__copy');
         if (!btn) return;
@@ -144,6 +148,31 @@
           });
         });
       });
+      (function addCopyToCodeBlocks() {
+        document.querySelectorAll('pre code').forEach(function (code) {
+          var pre = code.parentElement;
+          if (!pre || pre.tagName !== 'PRE') return;
+          if (pre.closest('.install-card__code') || pre.closest('.code-block')) return;
+          var wrapper = document.createElement('div');
+          wrapper.className = 'code-block';
+          pre.parentNode.insertBefore(wrapper, pre);
+          wrapper.appendChild(pre);
+          var copyBtn = document.createElement('button');
+          copyBtn.type = 'button';
+          copyBtn.className = 'code-block__copy';
+          copyBtn.textContent = 'Copy';
+          copyBtn.setAttribute('aria-label', 'Copy code');
+          copyBtn.addEventListener('click', function () {
+            var text = code.textContent.trim();
+            if (!text) return;
+            navigator.clipboard.writeText(text).then(function () {
+              copyBtn.textContent = 'Copied!';
+              setTimeout(function () { copyBtn.textContent = 'Copy'; }, 2000);
+            });
+          });
+          wrapper.appendChild(copyBtn);
+        });
+      })();
       var yearEl = document.getElementById('footer-year');
       if (yearEl) yearEl.textContent = new Date().getFullYear();
       var scrollTopBtn = document.getElementById('scrollTopBtn');

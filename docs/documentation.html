@@ -9,7 +9,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/style.css">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/themes/prism.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css">
 </head>
 <body>
   <nav class="nav" id="nav">
@@ -65,7 +65,7 @@
 
     <section class="doc-section" id="quick-start">
       <h2>Quick start</h2>
-      <pre><code class="language-php">&lt;?php
+      <pre class="language-php"><code class="language-php">&lt;?php
 require_once __DIR__ . '/vendor/autoload.php';
 
 use Marcuwynu23\Narciso\Application;
@@ -79,7 +79,7 @@ $app->route('GET', '/', function ($app) {
 
 $app->run();</code></pre>
       <p>Run with PHP built-in server:</p>
-      <pre><code class="language-bash">php -S localhost:8080 -t public</code></pre>
+      <pre class="language-bash"><code class="language-bash">php -S localhost:8080 -t public</code></pre>
       <p>(or your document root).</p>
     </section>
 
@@ -101,7 +101,7 @@ $app->run();</code></pre>
       <p><strong>Path:</strong> Exact path or named parameters with <code>:name</code> (e.g. <code>/users/:id</code>, <code>/posts/:slug/comments/:cid</code>). Param names must match <code>[a-zA-Z_][a-zA-Z0-9_]*</code>.</p>
       <p><strong>Callback:</strong> <code>function (Application $app, array $params)</code>. <code>$params</code> contains captured path parameters (e.g. <code>['id' => '42']</code>).</p>
       <h3>Examples</h3>
-      <pre><code class="language-php">// Exact path
+      <pre class="language-php"><code class="language-php">// Exact path
 $app->route('GET', '/', function ($app) {
     $app->json(['message' => 'Hello']);
 });
@@ -135,7 +135,7 @@ $app->route('POST', '/echo', function ($app) {
         <li><strong>Callable:</strong> <code>function ($app, $next) { ...; return $next(); }</code>. Call <code>$next()</code> to continue the pipeline.</li>
         <li><strong>MiddlewareInterface:</strong> Class with <code>handle(callable $next)</code> that calls <code>$next()</code> to continue.</li>
       </ul>
-      <pre><code class="language-php">$app->use(function ($app, $next) {
+      <pre class="language-php"><code class="language-php">$app->use(function ($app, $next) {
     // before
     $result = $next();
     // after
@@ -167,7 +167,7 @@ $app->use(new class implements \Marcuwynu23\Narciso\Middleware\MiddlewareInterfa
         <li><code>$credentials</code> — allow credentials (default <code>false</code>)</li>
         <li><code>$maxAge</code> — preflight cache in seconds (default <code>86400</code>)</li>
       </ul>
-      <pre><code class="language-php">$app->useCors(
+      <pre class="language-php"><code class="language-php">$app->useCors(
     ['*'],
     ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
     ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept'],
@@ -177,7 +177,7 @@ $app->use(new class implements \Marcuwynu23\Narciso\Middleware\MiddlewareInterfa
       <p>On <code>OPTIONS</code> requests the middleware responds with <code>204</code> and exits.</p>
       <h3>useRateLimit(int $maxRequests, int $windowSeconds)</h3>
       <p>Rate limit per client (by IP; respects <code>X-Forwarded-For</code>). In-memory store — use Redis or similar in production for multi-process.</p>
-      <pre><code class="language-php">$app->useRateLimit(60, 60); // 60 requests per 60 seconds</code></pre>
+      <pre class="language-php"><code class="language-php">$app->useRateLimit(60, 60); // 60 requests per 60 seconds</code></pre>
       <p>When exceeded, responds with <code>429 Too Many Requests</code>, <code>Retry-After</code> header, and JSON body <code>{"error":"Too Many Requests","retry_after":60}</code>.</p>
     </section>
 
@@ -186,7 +186,7 @@ $app->use(new class implements \Marcuwynu23\Narciso\Middleware\MiddlewareInterfa
       <p><code>handleDatabase(array $config): self</code></p>
       <p>Connects and exposes <code>$app->db</code> (mysqli for MySQL, SQLite3 for SQLite).</p>
       <h3>MySQL</h3>
-      <pre><code class="language-php">$app->handleDatabase([
+      <pre class="language-php"><code class="language-php">$app->handleDatabase([
     'type'     => 'mysql',
     'host'     => 'localhost',
     'database' => 'mydb',
@@ -195,7 +195,7 @@ $app->use(new class implements \Marcuwynu23\Narciso\Middleware\MiddlewareInterfa
 ]);</code></pre>
       <p><code>$app->db</code> is a <code>mysqli</code> instance. Throws <code>RuntimeException</code> on connection failure.</p>
       <h3>SQLite</h3>
-      <pre><code class="language-php">$app->handleDatabase([
+      <pre class="language-php"><code class="language-php">$app->handleDatabase([
     'type'     => 'sqlite',
     'database' => '/path/to/file.sqlite',  // or ':memory:'
 ]);</code></pre>
@@ -233,7 +233,7 @@ $app->use(new class implements \Marcuwynu23\Narciso\Middleware\MiddlewareInterfa
       <h2>Views</h2>
       <p><code>setViewPath(string $path)</code> — Base directory for view files.</p>
       <p><code>render(string $view, array $data = []): void</code> — Includes a PHP file from the view path. <code>$view</code> is the path without <code>.php</code> (e.g. <code>/home.view</code> or <code>/about/about.view</code>). Variables are extracted into the view (e.g. <code>'message' => 'Hi'</code> becomes <code>$message</code>).</p>
-      <pre><code class="language-php">$app->setViewPath(__DIR__ . '/views');
+      <pre class="language-php"><code class="language-php">$app->setViewPath(__DIR__ . '/views');
 $app->route('GET', '/', function ($app) {
     $app->render('/home.view', ['message' => 'Hello']);
 });
@@ -266,7 +266,7 @@ $app->route('GET', '/', function ($app) {
     <section class="doc-section" id="full-example">
       <h2>Full example</h2>
       <p>Combining routing, middleware, database, API, and views:</p>
-      <pre><code class="language-php">&lt;?php
+      <pre class="language-php"><code class="language-php">&lt;?php
 require_once __DIR__ . '/vendor/autoload.php';
 
 use Marcuwynu23\Narciso\Application;
@@ -353,9 +353,9 @@ $app->run();</code></pre>
   <button type="button" class="scroll-top" id="scrollTopBtn" aria-label="Scroll to top" title="Scroll to top">
     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
   </button>
-  <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/prism.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-php.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-bash.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/php.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/bash.min.js"></script>
   <script>
     (function () {
       var toggle = document.getElementById('navToggle');
@@ -386,7 +386,10 @@ $app->run();</code></pre>
           setMenuOpen(false);
         });
       }
-      if (typeof Prism !== 'undefined') Prism.highlightAll();
+      if (typeof hljs !== 'undefined') {
+        hljs.highlightAll();
+        window.addEventListener('load', function () { hljs.highlightAll(); });
+      }
       document.querySelectorAll('.install-card__code').forEach(function (wrap) {
         var btn = wrap.querySelector('.install-card__copy');
         if (!btn) return;
@@ -399,6 +402,31 @@ $app->run();</code></pre>
           });
         });
       });
+      (function addCopyToCodeBlocks() {
+        document.querySelectorAll('pre code').forEach(function (code) {
+          var pre = code.parentElement;
+          if (!pre || pre.tagName !== 'PRE') return;
+          if (pre.closest('.install-card__code') || pre.closest('.code-block')) return;
+          var wrapper = document.createElement('div');
+          wrapper.className = 'code-block';
+          pre.parentNode.insertBefore(wrapper, pre);
+          wrapper.appendChild(pre);
+          var copyBtn = document.createElement('button');
+          copyBtn.type = 'button';
+          copyBtn.className = 'code-block__copy';
+          copyBtn.textContent = 'Copy';
+          copyBtn.setAttribute('aria-label', 'Copy code');
+          copyBtn.addEventListener('click', function () {
+            var text = code.textContent.trim();
+            if (!text) return;
+            navigator.clipboard.writeText(text).then(function () {
+              copyBtn.textContent = 'Copied!';
+              setTimeout(function () { copyBtn.textContent = 'Copy'; }, 2000);
+            });
+          });
+          wrapper.appendChild(copyBtn);
+        });
+      })();
       var yearEl = document.getElementById('footer-year');
       if (yearEl) yearEl.textContent = new Date().getFullYear();
       var scrollTopBtn = document.getElementById('scrollTopBtn');
