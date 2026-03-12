@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" fill="none" stroke="#b45309" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round">
+  <!-- 6 petal curves (narcissus outline) -->
+  <path d="M24 16 Q21 8 24 4 Q27 8 24 16" />
+  <path d="M24 16 Q32 10 38 12 Q35 18 24 16" />
+  <path d="M24 16 Q36 24 38 32 Q32 34 24 16" />
+  <path d="M24 16 Q27 36 24 40 Q21 36 24 16" />
+  <path d="M24 16 Q12 24 10 32 Q16 34 24 16" />
+  <path d="M24 16 Q16 10 10 12 Q13 18 24 16" />
+  <!-- Central trumpet -->
+  <ellipse cx="24" cy="20" rx="6" ry="7" />
+  <!-- Stem -->
+  <path d="M24 27 L24 42" />
+</svg>
