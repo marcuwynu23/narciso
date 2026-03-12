@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Narciso — PHP web library</title>
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/themes/prism.min.css">
+</head>
+<body>
+  <nav class="nav">
+    <a href="index.html" class="nav__brand"><img src="logo.svg" alt="" class="nav__logo" width="28" height="28">Narciso</a>
+    <button type="button" class="nav__toggle" aria-label="Toggle menu" id="navToggle" aria-expanded="false">
+      <span class="nav__toggle-line"></span>
+      <span class="nav__toggle-line"></span>
+      <span class="nav__toggle-line"></span>
+    </button>
+    <div class="nav__overlay" id="navOverlay" aria-hidden="true"></div>
+    <ul class="nav__links" id="navLinks">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="documentation.html">Documentation</a></li>
+      <li><a href="https://github.com/marcuwynu23/narciso" class="nav__github" target="_blank" rel="noopener noreferrer">GitHub</a></li>
+    </ul>
+  </nav>
+
+  <main class="main container-fluid page--home">
+    <header class="hero">
+      <img src="logo.svg" alt="" class="hero__logo" width="64" height="64">
+      <h1 class="hero__title">Narciso</h1>
+      <p class="hero__tagline">A lightweight PHP web library for routing, middleware, database, and APIs. Build simple backends without a full framework.</p>
+      <div class="hero__ctas">
+        <a href="documentation.html" class="btn btn--primary">Documentation</a>
+        <a href="https://github.com/marcuwynu23/narciso" class="btn btn--secondary" target="_blank" rel="noopener noreferrer">View on GitHub</a>
+      </div>
+    </header>
+
+    <section class="install-card">
+      <h2 class="install-card__title">Install</h2>
+      <div class="install-card__code" data-copy="composer require marcuwynu23/narciso">
+        <pre class="install-card__pre"><code class="language-bash">composer require marcuwynu23/narciso</code></pre>
+        <button type="button" class="install-card__copy" aria-label="Copy command">Copy</button>
+      </div>
+    </section>
+
+    <section class="features">
+      <div class="feature-card">
+        <h3>Clean URLs &amp; pages</h3>
+        <p>Map friendly addresses to your logic. Use dynamic segments (e.g. a user or post ID in the URL) and respond with JSON or HTML.</p>
+      </div>
+      <div class="feature-card">
+        <h3>Security &amp; control</h3>
+        <p>Add security headers, control who can call your app from other sites, and limit how often requests can be made to protect your server.</p>
+      </div>
+      <div class="feature-card">
+        <h3>Database ready</h3>
+        <p>Connect to MySQL or SQLite and start reading and writing data. No extra setup—just point to your database and go.</p>
+      </div>
+      <div class="feature-card">
+        <h3>APIs &amp; HTML</h3>
+        <p>Return JSON or XML for APIs, render HTML from PHP templates, and send users to the right page with redirects.</p>
+      </div>
+    </section>
+
+    <footer class="footer">
+      <div class="footer__inner">
+        <div class="footer__brand">
+          <img src="logo.svg" alt="" class="footer__logo" width="32" height="32">
+          <span class="footer__name">Narciso</span>
+          <p class="footer__tagline">A lightweight PHP web library. Build simple backends without a full framework.</p>
+        </div>
+        <div class="footer__links">
+          <h4 class="footer__heading">Quick links</h4>
+          <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="documentation.html">Documentation</a></li>
+            <li><a href="https://github.com/marcuwynu23/narciso" target="_blank" rel="noopener noreferrer">GitHub</a></li>
+          </ul>
+        </div>
+        <div class="footer__links">
+          <h4 class="footer__heading">Resources</h4>
+          <ul>
+            <li><a href="documentation.html#installation">Installation</a></li>
+            <li><a href="documentation.html#quick-start">Quick start</a></li>
+            <li><a href="documentation.html#routing">Routing</a></li>
+            <li><a href="documentation.html#database">Database</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer__bottom">
+        <p class="footer__copyright">© <span id="footer-year">2025</span> Narciso. By <a href="https://github.com/marcuwynu23">Marcuwynu23</a>. Native PHP, no framework required.</p>
+      </div>
+    </footer>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/prism.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-bash.min.js"></script>
+  <script>
+    (function () {
+      var toggle = document.getElementById('navToggle');
+      var links = document.getElementById('navLinks');
+      var overlay = document.getElementById('navOverlay');
+      function setMenuOpen(open) {
+        var isOpen = !!open;
+        if (links) {
+          links.classList.toggle('is-open', isOpen);
+        }
+        if (toggle) {
+          toggle.classList.toggle('nav__toggle--open', isOpen);
+          toggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+        }
+        if (overlay) {
+          overlay.classList.toggle('nav__overlay--open', isOpen);
+          overlay.setAttribute('aria-hidden', isOpen ? 'false' : 'true');
+        }
+        document.body.style.overflow = isOpen ? 'hidden' : '';
+      }
+      if (toggle && links) {
+        toggle.addEventListener('click', function () {
+          setMenuOpen(!links.classList.contains('is-open'));
+        });
+      }
+      if (overlay) {
+        overlay.addEventListener('click', function () {
+          setMenuOpen(false);
+        });
+      }
+      if (typeof Prism !== 'undefined') Prism.highlightAll();
+      document.querySelectorAll('.install-card__code').forEach(function (wrap) {
+        var btn = wrap.querySelector('.install-card__copy');
+        if (!btn) return;
+        btn.addEventListener('click', function () {
+          var text = wrap.getAttribute('data-copy') || (wrap.querySelector('code') && wrap.querySelector('code').textContent.trim());
+          if (!text) return;
+          navigator.clipboard.writeText(text).then(function () {
+            btn.textContent = 'Copied!';
+            setTimeout(function () { btn.textContent = 'Copy'; }, 2000);
+          });
+        });
+      });
+      var yearEl = document.getElementById('footer-year');
+      if (yearEl) yearEl.textContent = new Date().getFullYear();
+    })();
+  </script>
+</body>
+</html>
