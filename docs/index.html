@@ -7,25 +7,25 @@
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/style.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/themes/prism.min.css">
 </head>
 <body>
-  <nav class="nav">
+  <nav class="nav" id="nav">
     <a href="index.html" class="nav__brand"><img src="logo.svg" alt="" class="nav__logo" width="28" height="28">Narciso</a>
     <button type="button" class="nav__toggle" aria-label="Toggle menu" id="navToggle" aria-expanded="false">
       <span class="nav__toggle-line"></span>
       <span class="nav__toggle-line"></span>
       <span class="nav__toggle-line"></span>
     </button>
-    <div class="nav__overlay" id="navOverlay" aria-hidden="true"></div>
-    <ul class="nav__links" id="navLinks">
-      <li><a href="index.html">Home</a></li>
-      <li><a href="documentation.html">Documentation</a></li>
-      <li><a href="https://github.com/marcuwynu23/narciso" class="nav__github" target="_blank" rel="noopener noreferrer">GitHub</a></li>
-    </ul>
   </nav>
+  <div class="nav__overlay" id="navOverlay" aria-hidden="true"></div>
+  <ul class="nav__links" id="navLinks">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="documentation.html">Documentation</a></li>
+    <li><a href="https://github.com/marcuwynu23/narciso" class="nav__github" target="_blank" rel="noopener noreferrer">GitHub</a></li>
+  </ul>
 
   <main class="main container-fluid page--home">
     <header class="hero">
@@ -65,37 +65,37 @@
       </div>
     </section>
 
-    <footer class="footer">
-      <div class="footer__inner">
-        <div class="footer__brand">
-          <img src="logo.svg" alt="" class="footer__logo" width="32" height="32">
-          <span class="footer__name">Narciso</span>
-          <p class="footer__tagline">A lightweight PHP web library. Build simple backends without a full framework.</p>
-        </div>
-        <div class="footer__links">
-          <h4 class="footer__heading">Quick links</h4>
-          <ul>
-            <li><a href="index.html">Home</a></li>
-            <li><a href="documentation.html">Documentation</a></li>
-            <li><a href="https://github.com/marcuwynu23/narciso" target="_blank" rel="noopener noreferrer">GitHub</a></li>
-          </ul>
-        </div>
-        <div class="footer__links">
-          <h4 class="footer__heading">Resources</h4>
-          <ul>
-            <li><a href="documentation.html#installation">Installation</a></li>
-            <li><a href="documentation.html#quick-start">Quick start</a></li>
-            <li><a href="documentation.html#routing">Routing</a></li>
-            <li><a href="documentation.html#database">Database</a></li>
-          </ul>
-        </div>
-      </div>
-      <div class="footer__bottom">
-        <p class="footer__copyright">© <span id="footer-year">2025</span> Narciso. By <a href="https://github.com/marcuwynu23">Marcuwynu23</a>. Native PHP, no framework required.</p>
-      </div>
-    </footer>
   </main>
 
+  <footer class="footer">
+    <div class="footer__inner">
+      <div class="footer__brand">
+        <img src="logo.svg" alt="" class="footer__logo" width="32" height="32">
+        <span class="footer__name">Narciso</span>
+        <p class="footer__tagline">A lightweight PHP web library. Build simple backends without a full framework.</p>
+      </div>
+      <div class="footer__links">
+        <h4 class="footer__heading">Quick links</h4>
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="documentation.html">Documentation</a></li>
+          <li><a href="https://github.com/marcuwynu23/narciso" target="_blank" rel="noopener noreferrer">GitHub</a></li>
+        </ul>
+      </div>
+      <div class="footer__links">
+        <h4 class="footer__heading">Resources</h4>
+        <ul>
+          <li><a href="documentation.html#installation">Installation</a></li>
+          <li><a href="documentation.html#quick-start">Quick start</a></li>
+          <li><a href="documentation.html#routing">Routing</a></li>
+          <li><a href="documentation.html#database">Database</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer__bottom">
+      <p class="footer__copyright">© <span id="footer-year">2025</span> Narciso. By <a href="https://github.com/marcuwynu23">Marcuwynu23</a>. Native PHP, no framework required.</p>
+    </div>
+  </footer>
   <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/prism.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-bash.min.js"></script>
   <script>
@@ -143,7 +143,22 @@
       });
       var yearEl = document.getElementById('footer-year');
       if (yearEl) yearEl.textContent = new Date().getFullYear();
+      var scrollTopBtn = document.getElementById('scrollTopBtn');
+      if (scrollTopBtn) {
+        function onScroll() {
+          var atBottom = (window.scrollY + window.innerHeight) >= document.documentElement.scrollHeight - 80;
+          scrollTopBtn.classList.toggle('scroll-top--visible', atBottom);
+        }
+        window.addEventListener('scroll', onScroll, { passive: true });
+        onScroll();
+        scrollTopBtn.addEventListener('click', function () {
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+      }
     })();
   </script>
+  <button type="button" class="scroll-top" id="scrollTopBtn" aria-label="Scroll to top" title="Scroll to top">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
+  </button>
 </body>
 </html>
