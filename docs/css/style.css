@@ -1173,9 +1173,9 @@ small, .muted {
 }
 
 .scroll-top.scroll-top--visible {
-  opacity: 1;
-  visibility: visible;
-  pointer-events: auto;
+  opacity: 1 !important;
+  visibility: visible !important;
+  pointer-events: auto !important;
 }
 
 .scroll-top:hover,

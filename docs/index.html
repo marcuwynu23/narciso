@@ -96,6 +96,9 @@
       <p class="footer__copyright">© <span id="footer-year">2025</span> Narciso. By <a href="https://github.com/marcuwynu23">Marcuwynu23</a>. Native PHP, no framework required.</p>
     </div>
   </footer>
+  <button type="button" class="scroll-top" id="scrollTopBtn" aria-label="Scroll to top" title="Scroll to top">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
+  </button>
   <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/prism.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-bash.min.js"></script>
   <script>
@@ -146,19 +149,17 @@
       var scrollTopBtn = document.getElementById('scrollTopBtn');
       if (scrollTopBtn) {
         function onScroll() {
-          var atBottom = (window.scrollY + window.innerHeight) >= document.documentElement.scrollHeight - 80;
-          scrollTopBtn.classList.toggle('scroll-top--visible', atBottom);
+          var show = window.scrollY > 200;
+          scrollTopBtn.classList.toggle('scroll-top--visible', show);
         }
         window.addEventListener('scroll', onScroll, { passive: true });
         onScroll();
+        window.addEventListener('load', onScroll);
         scrollTopBtn.addEventListener('click', function () {
           window.scrollTo({ top: 0, behavior: 'smooth' });
         });
       }
     })();
   </script>
-  <button type="button" class="scroll-top" id="scrollTopBtn" aria-label="Scroll to top" title="Scroll to top">
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
-  </button>
 </body>
 </html>
