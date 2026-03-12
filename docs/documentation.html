@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <meta name="theme-color" content="#b45309">
   <meta name="description" content="Narciso documentation — Installation, routing, middleware, database, request/response, views, and full PHP examples.">
+  <meta name="robots" content="index, follow">
   <title>Narciso — Documentation</title>
   <!-- Open Graph (Facebook, LinkedIn) -->
   <meta property="og:type" content="website">
@@ -19,7 +20,30 @@
   <meta name="twitter:title" content="Narciso — Documentation">
   <meta name="twitter:description" content="Narciso documentation — Installation, routing, middleware, database, request/response, views, and full PHP examples.">
   <meta name="twitter:image" content="https://narciso.marcuwynu.space/logo.svg">
+  <link rel="canonical" href="https://narciso.marcuwynu.space/documentation.html">
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "TechArticle",
+    "name": "Narciso — Documentation",
+    "description": "Complete implementation guide for Narciso: installation, routing, middleware, database, request/response, views, and full PHP examples.",
+    "url": "https://narciso.marcuwynu.space/documentation.html",
+    "mainEntityOfPage": {
+      "@type": "WebPage",
+      "@id": "https://narciso.marcuwynu.space/documentation.html"
+    },
+    "breadcrumb": {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://narciso.marcuwynu.space/" },
+        { "@type": "ListItem", "position": 2, "name": "Documentation", "item": "https://narciso.marcuwynu.space/documentation.html" }
+      ]
+    },
+    "author": { "@type": "Person", "name": "Marcuwynu23", "url": "https://github.com/marcuwynu23" },
+    "publisher": { "@type": "Organization", "name": "Narciso", "url": "https://narciso.marcuwynu.space/" }
+  }
+  </script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -30,7 +54,7 @@
 </head>
 <body>
   <nav class="nav" id="nav">
-    <a href="index.html" class="nav__brand"><img src="logo.svg" alt="" class="nav__logo" width="28" height="28">Narciso</a>
+    <a href="index.html" class="nav__brand" aria-label="Narciso home"><img src="logo.svg" alt="Narciso" class="nav__logo" width="28" height="28">Narciso</a>
     <button type="button" class="nav__toggle" aria-label="Toggle menu" id="navToggle" aria-expanded="false">
       <span class="nav__toggle-line"></span>
       <span class="nav__toggle-line"></span>
