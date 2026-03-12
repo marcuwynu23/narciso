@@ -792,6 +792,15 @@ pre code {
   min-width: 0;
 }
 
+/* Highlight.js: use project mono font and keep theme colors */
+pre.hljs,
+pre code.hljs {
+  font-family: var(--font-mono);
+  padding: 0;
+  background: transparent;
+  border: none;
+}
+
 /* Sections in docs */
 .doc-section {
   margin-bottom: 2.5rem;
@@ -1004,6 +1013,38 @@ pre code {
 }
 
 .install-card__copy:hover {
+  color: var(--accent);
+  border-color: var(--accent);
+  background: rgba(180, 83, 9, 0.06);
+}
+
+/* Wrapper for any code block that gets a copy button (added by JS) */
+.code-block {
+  position: relative;
+  max-width: 100%;
+  min-width: 0;
+}
+
+.code-block pre {
+  padding-right: 4.5rem;
+}
+
+.code-block__copy {
+  position: absolute;
+  top: 0.75rem;
+  right: 0.75rem;
+  padding: 0.35rem 0.65rem;
+  font-size: 0.8125rem;
+  font-family: var(--font-sans);
+  color: var(--text-muted);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: color 0.15s, border-color 0.15s, background 0.15s;
+}
+
+.code-block__copy:hover {
   color: var(--accent);
   border-color: var(--accent);
   background: rgba(180, 83, 9, 0.06);
