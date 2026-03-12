@@ -801,6 +801,66 @@ pre code.hljs {
   border: none;
 }
 
+/* Terminal / bash blocks: light mode with accent colors */
+pre.language-bash,
+.code-block pre.language-bash {
+  background: #f0f2f5;
+  border-color: #d4d8de;
+}
+
+pre.language-bash code,
+pre.language-bash .hljs,
+.code-block pre.language-bash code,
+.code-block pre.language-bash .hljs {
+  background: transparent !important;
+  color: #24292f;
+}
+
+pre.language-bash .hljs-comment,
+pre.language-bash .hljs-quote {
+  color: #57606a;
+  font-style: italic;
+}
+
+pre.language-bash .hljs-keyword,
+pre.language-bash .hljs-selector-tag,
+pre.language-bash .hljs-addition {
+  color: #0550ae;
+}
+
+pre.language-bash .hljs-built_in,
+pre.language-bash .hljs-number,
+pre.language-bash .hljs-string {
+  color: #0a3069;
+}
+
+pre.language-bash .hljs-meta,
+pre.language-bash .hljs-meta .hljs-meta-string {
+  color: #953800;
+}
+
+pre.language-bash .hljs-attr,
+pre.language-bash .hljs-variable,
+pre.language-bash .hljs-template-variable {
+  color: #cf222e;
+}
+
+pre.language-bash .hljs-symbol {
+  color: #8250df;
+}
+
+/* Install card bash (one-liner) gets terminal style too */
+.install-card__code pre.language-bash,
+.install-card__pre.language-bash {
+  background: #f0f2f5;
+  border-color: #d4d8de;
+}
+
+.install-card__code pre.language-bash code,
+.install-card__code .install-card__pre.language-bash code {
+  color: #0a3069;
+}
+
 /* Sections in docs */
 .doc-section {
   margin-bottom: 2.5rem;
