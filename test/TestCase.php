@@ -2,6 +2,7 @@
 
 namespace Marcuwynu23\Narciso\Test;
 
+use Marcuwynu23\Narciso\Middleware\RateLimitMiddleware;
 use PHPUnit\Framework\TestCase as BaseTestCase;
 
 /**
@@ -20,6 +21,7 @@ abstract class TestCase extends BaseTestCase
 		parent::setUp();
 		$this->serverBackup = $_SERVER;
 		$this->obLevel = ob_get_level();
+		RateLimitMiddleware::resetStore();
 	}
 
 	protected function tearDown(): void
@@ -67,6 +69,12 @@ abstract class TestCase extends BaseTestCase
 		foreach ($list as $h) {
 			$parts = explode(':', $h, 2);
 			$headers[trim($parts[0])] = isset($parts[1]) ? trim($parts[1]) : '';
+		}
+		if (empty($headers) && function_exists('xdebug_get_headers')) {
+			foreach (xdebug_get_headers() as $h) {
+				$parts = explode(':', $h, 2);
+				$headers[trim($parts[0])] = isset($parts[1]) ? trim($parts[1]) : '';
+			}
 		}
 		return [$output, $code ?: 200, $headers];
 	}
