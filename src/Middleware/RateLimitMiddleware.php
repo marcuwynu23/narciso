@@ -39,9 +39,14 @@ final class RateLimitMiddleware implements MiddlewareInterface
 			header('Content-Type: application/json');
 			header('Retry-After: ' . ($this->windowSeconds - ($now - $entry['start'])));
 			echo json_encode(['error' => 'Too Many Requests', 'retry_after' => $this->windowSeconds]);
-			exit;
+			return;
 		}
 		return $next();
+	}
+
+	public static function resetStore(): void
+	{
+		self::$store = [];
 	}
 
 	private function clientKey(): string
