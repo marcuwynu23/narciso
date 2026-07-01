@@ -2,6 +2,8 @@
 
 namespace Marcuwynu23\Narciso\Middleware;
 
+use Marcuwynu23\Narciso\Application;
+
 /**
  * Configurable CORS middleware. Set origins, methods, headers, and credentials.
  */
@@ -34,16 +36,16 @@ final class CorsMiddleware implements MiddlewareInterface
 			? '*'
 			: (in_array($origin, $this->origins, true) ? $origin : ($this->origins[0] ?? '*'));
 
-		header("Access-Control-Allow-Origin: $allowOrigin");
-		header('Access-Control-Allow-Methods: ' . implode(', ', $this->methods));
-		header('Access-Control-Allow-Headers: ' . implode(', ', $this->headers));
-		header('Access-Control-Allow-Credentials: ' . ($this->credentials ? 'true' : 'false'));
+		Application::setResponseHeader('Access-Control-Allow-Origin', $allowOrigin);
+		Application::setResponseHeader('Access-Control-Allow-Methods', implode(', ', $this->methods));
+		Application::setResponseHeader('Access-Control-Allow-Headers', implode(', ', $this->headers));
+		Application::setResponseHeader('Access-Control-Allow-Credentials', $this->credentials ? 'true' : 'false');
 		if ($this->maxAge !== null) {
-			header('Access-Control-Max-Age: ' . $this->maxAge);
+			Application::setResponseHeader('Access-Control-Max-Age', (string) $this->maxAge);
 		}
 
-		if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
-			http_response_code(204);
+		if (($_SERVER['REQUEST_METHOD'] ?? '') === 'OPTIONS') {
+			Application::setResponseCode(204);
 			exit;
 		}
 
