@@ -21,5 +21,9 @@
       "email": "marcuwynu23@gmail.com"
     }
   ],
-  "require": {}
+  "require": {},
+  "scripts": {
+    "test": "phpunit",
+    "test-coverage": "phpunit --coverage-html coverage"
+  }
 }
