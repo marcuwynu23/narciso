@@ -2,6 +2,7 @@
 
 # Narciso
 
+[![CI](https://github.com/marcuwynu23/narciso/actions/workflows/ci.yml/badge.svg)](https://github.com/marcuwynu23/narciso/actions/workflows/ci.yml)
 [![GitHub license](https://img.shields.io/github/license/marcuwynu23/narciso)](https://github.com/marcuwynu23/narciso/blob/main/LICENSE)
 [![GitHub stars](https://img.shields.io/github/stars/marcuwynu23/narciso)](https://github.com/marcuwynu23/narciso/stargazers)
 [![GitHub issues](https://img.shields.io/github/issues/marcuwynu23/narciso)](https://github.com/marcuwynu23/narciso/issues)
@@ -307,12 +308,13 @@ Tests are test-driven and cover all main functionality: routing (exact and path 
 
 ```sh
 composer install
-vendor/bin/phpunit
+composer test
 ```
 
-Or from project root:
+Or directly:
 
 ```sh
+vendor/bin/phpunit
 php test/run_tests.php
 ```
 
