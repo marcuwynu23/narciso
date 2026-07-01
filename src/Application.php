@@ -21,8 +21,45 @@ final class Application
 	/** @var array<int, array{method: string, pattern: string, callback: callable}> */
 	private array $routes = [];
 
+	private static array $responseHeaders = [];
+	private static int $responseCode = 200;
+
 	public function __construct()
 	{
+	}
+
+	public static function setResponseHeader(string $name, string $value): void
+	{
+		self::$responseHeaders[$name] = $value;
+		header("$name: $value");
+	}
+
+	public static function removeResponseHeader(string $name): void
+	{
+		unset(self::$responseHeaders[$name]);
+		header_remove($name);
+	}
+
+	public static function setResponseCode(int $code): void
+	{
+		self::$responseCode = $code;
+		http_response_code($code);
+	}
+
+	public static function resetResponseState(): void
+	{
+		self::$responseHeaders = [];
+		self::$responseCode = 200;
+	}
+
+	public static function getResponseHeaders(): array
+	{
+		return self::$responseHeaders;
+	}
+
+	public static function getResponseCode(): int
+	{
+		return self::$responseCode;
 	}
 
 	/**
@@ -119,16 +156,16 @@ final class Application
 	public function handleCORS(): self
 	{
 		if (isset($_SERVER['HTTP_ORIGIN'])) {
-			header("Access-Control-Allow-Origin: {$_SERVER['HTTP_ORIGIN']}");
-			header('Access-Control-Allow-Credentials: true');
-			header('Access-Control-Max-Age: 86400');
+			self::setResponseHeader('Access-Control-Allow-Origin', $_SERVER['HTTP_ORIGIN']);
+			self::setResponseHeader('Access-Control-Allow-Credentials', 'true');
+			self::setResponseHeader('Access-Control-Max-Age', '86400');
 		}
-		if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+		if (($_SERVER['REQUEST_METHOD'] ?? '') === 'OPTIONS') {
 			if (isset($_SERVER['HTTP_ACCESS_CONTROL_REQUEST_METHOD'])) {
-				header("Access-Control-Allow-Methods: GET, POST, OPTIONS");
+				self::setResponseHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
 			}
 			if (isset($_SERVER['HTTP_ACCESS_CONTROL_REQUEST_HEADERS'])) {
-				header("Access-Control-Allow-Headers: {$_SERVER['HTTP_ACCESS_CONTROL_REQUEST_HEADERS']}");
+				self::setResponseHeader('Access-Control-Allow-Headers', $_SERVER['HTTP_ACCESS_CONTROL_REQUEST_HEADERS']);
 			}
 			exit(0);
 		}
@@ -231,9 +268,9 @@ final class Application
 	public function run(): void
 	{
 		if ($this->poweredBy === false) {
-			header_remove('X-Powered-By');
+			self::removeResponseHeader('X-Powered-By');
 		} elseif (is_string($this->poweredBy)) {
-			header('X-Powered-By: ' . $this->poweredBy);
+			self::setResponseHeader('X-Powered-By', $this->poweredBy);
 		}
 
 		$runner = function () {
@@ -243,8 +280,8 @@ final class Application
 				$callback($this, $params);
 				return;
 			}
-			http_response_code(404);
-			header('Content-Type: application/json');
+			self::setResponseCode(404);
+			self::setResponseHeader('Content-Type', 'application/json');
 			echo json_encode(['error' => 'Not Found', 'path' => $_SERVER['REQUEST_URI'] ?? '/']);
 		};
 
@@ -269,15 +306,15 @@ final class Application
 
 	public function redirect(string $url, int $statusCode = 302): void
 	{
-		http_response_code($statusCode);
-		header("Location: $url");
+		self::setResponseCode($statusCode);
+		self::setResponseHeader('Location', $url);
 		exit;
 	}
 
 	public function json($data, int $statusCode = 200): void
 	{
-		http_response_code($statusCode);
-		header('Content-Type: application/json; charset=utf-8');
+		self::setResponseCode($statusCode);
+		self::setResponseHeader('Content-Type', 'application/json; charset=utf-8');
 		echo json_encode($data);
 	}
 
@@ -300,15 +337,15 @@ final class Application
 			$data = ['data' => $data];
 		}
 
-		http_response_code($statusCode);
+		self::setResponseCode($statusCode);
 
 		if ($format === 'xml') {
-			header('Content-Type: application/xml; charset=utf-8');
+			self::setResponseHeader('Content-Type', 'application/xml; charset=utf-8');
 			echo $this->arrayToXml($data, $root, $xmlItemName);
 			return;
 		}
 
-		header('Content-Type: application/json; charset=utf-8');
+		self::setResponseHeader('Content-Type', 'application/json; charset=utf-8');
 		echo json_encode($data);
 	}
 
