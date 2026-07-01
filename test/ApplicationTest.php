@@ -252,11 +252,11 @@ final class ApplicationTest extends TestCase
 		$_SERVER['HTTP_ORIGIN'] = 'http://test.example.com';
 		$app = new Application();
 		$app->setViewPath(__DIR__ . '/../samples/views');
+		$this->setRequest('GET', '/');
 		$app->handleCORS();
 		$app->route('GET', '/', function ($app) {
 			$app->json([]);
 		});
-		$this->setRequest('GET', '/');
 		[, , $headers] = $this->runApp($app);
 		$this->assertArrayHasKey('Access-Control-Allow-Origin', $headers);
 		$this->assertSame('http://test.example.com', $headers['Access-Control-Allow-Origin']);
