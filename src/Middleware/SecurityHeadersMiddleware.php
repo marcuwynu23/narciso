@@ -2,6 +2,8 @@
 
 namespace Marcuwynu23\Narciso\Middleware;
 
+use Marcuwynu23\Narciso\Application;
+
 /**
  * Adds security-related HTTP headers to every response.
  */
@@ -9,7 +11,7 @@ final class SecurityHeadersMiddleware implements MiddlewareInterface
 {
 	private array $headers;
 
-	public function __construct(array $headers = null)
+	public function __construct(?array $headers = null)
 	{
 		$this->headers = $headers ?? [
 			'X-Content-Type-Options' => 'nosniff',
@@ -23,7 +25,7 @@ final class SecurityHeadersMiddleware implements MiddlewareInterface
 	public function handle(callable $next)
 	{
 		foreach ($this->headers as $name => $value) {
-			header("$name: $value");
+			Application::setResponseHeader($name, $value);
 		}
 		return $next();
 	}
