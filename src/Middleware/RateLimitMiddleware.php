@@ -2,6 +2,8 @@
 
 namespace Marcuwynu23\Narciso\Middleware;
 
+use Marcuwynu23\Narciso\Application;
+
 /**
  * Rate limit requests per client (by IP). In-memory store; use Redis in production for multi-process.
  */
@@ -35,9 +37,9 @@ final class RateLimitMiddleware implements MiddlewareInterface
 		}
 		$entry['count']++;
 		if ($entry['count'] > $this->maxRequests) {
-			http_response_code(429);
-			header('Content-Type: application/json');
-			header('Retry-After: ' . ($this->windowSeconds - ($now - $entry['start'])));
+			Application::setResponseCode(429);
+			Application::setResponseHeader('Content-Type', 'application/json');
+			Application::setResponseHeader('Retry-After', (string) ($this->windowSeconds - ($now - $entry['start'])));
 			echo json_encode(['error' => 'Too Many Requests', 'retry_after' => $this->windowSeconds]);
 			return;
 		}
