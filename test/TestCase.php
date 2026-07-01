@@ -2,6 +2,7 @@
 
 namespace Marcuwynu23\Narciso\Test;
 
+use Marcuwynu23\Narciso\Application;
 use Marcuwynu23\Narciso\Middleware\RateLimitMiddleware;
 use PHPUnit\Framework\TestCase as BaseTestCase;
 
@@ -21,6 +22,7 @@ abstract class TestCase extends BaseTestCase
 		parent::setUp();
 		$this->serverBackup = $_SERVER;
 		$this->obLevel = ob_get_level();
+		Application::resetResponseState();
 		RateLimitMiddleware::resetStore();
 	}
 
@@ -45,37 +47,13 @@ abstract class TestCase extends BaseTestCase
 	protected function runApp(\Marcuwynu23\Narciso\Application $app): array
 	{
 		ob_start();
-		$headers = [];
-		$prev = null;
-		if (function_exists('xdebug_get_headers')) {
-			$prev = @ini_get('xdebug.trigger_error');
-			@ini_set('xdebug.trigger_error', '0');
-		}
 		try {
 			$app->run();
 		} catch (\Throwable $e) {
 			ob_end_clean();
-			if ($prev !== null) {
-				@ini_restore('xdebug.trigger_error');
-			}
 			throw $e;
 		}
 		$output = ob_get_clean();
-		if ($prev !== null) {
-			@ini_restore('xdebug.trigger_error');
-		}
-		$code = http_response_code();
-		$list = headers_list();
-		foreach ($list as $h) {
-			$parts = explode(':', $h, 2);
-			$headers[trim($parts[0])] = isset($parts[1]) ? trim($parts[1]) : '';
-		}
-		if (empty($headers) && function_exists('xdebug_get_headers')) {
-			foreach (xdebug_get_headers() as $h) {
-				$parts = explode(':', $h, 2);
-				$headers[trim($parts[0])] = isset($parts[1]) ? trim($parts[1]) : '';
-			}
-		}
-		return [$output, $code ?: 200, $headers];
+		return [$output, Application::getResponseCode(), Application::getResponseHeaders()];
 	}
 }
