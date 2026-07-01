@@ -21,6 +21,7 @@
       "email": "marcuwynu23@gmail.com"
     }
   ],
+  "license": "MIT",
   "require": {},
   "scripts": {
     "test": "phpunit",
