@@ -23,7 +23,6 @@ final class Application
 
 	public function __construct()
 	{
-		$this->serverLog("Narciso Application.");
 	}
 
 	/**
