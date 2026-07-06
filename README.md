@@ -1,6 +1,6 @@
 <div align="center">
 
-# Narciso
+<img src="./docs/logo.svg" width="308">
 
 <a href="https://packagist.org/packages/marcuwynu23/narciso"><img src="https://img.shields.io/packagist/v/marcuwynu23/narciso" alt="Packagist"></a>
 <a href="LICENSE"><img src="https://img.shields.io/github/license/marcuwynu23/narciso" alt="License"></a>
@@ -52,14 +52,14 @@
 
 ### Why Use It?
 
-| Problem | How Narciso Solves It |
-|---|---|
-| Heavy frameworks require boilerplate | Narciso is ~500 lines of PHP; drop it in and start coding |
-| CORS and security headers are tedious | One call: `$app->useCors([...])`, `$app->useSecurityHeaders()` |
-| Rate limiting needs middleware setup | `$app->useRateLimit(100, 60)` — 1 line, in-memory, per-IP |
-| Database config varies between MySQL/SQLite | Single `handleDatabase([...])` with `type: mysql` or `type: sqlite` |
-| API format negotiation is boilerplate | `$app->sendAPI($data)` auto-detects JSON vs XML from `Accept` header or `?format=` |
-| Server signature leaks tech stack | `$app->setPoweredBy(false)` removes `X-Powered-By` entirely |
+| Problem                                     | How Narciso Solves It                                                              |
+| ------------------------------------------- | ---------------------------------------------------------------------------------- |
+| Heavy frameworks require boilerplate        | Narciso is ~500 lines of PHP; drop it in and start coding                          |
+| CORS and security headers are tedious       | One call: `$app->useCors([...])`, `$app->useSecurityHeaders()`                     |
+| Rate limiting needs middleware setup        | `$app->useRateLimit(100, 60)` — 1 line, in-memory, per-IP                          |
+| Database config varies between MySQL/SQLite | Single `handleDatabase([...])` with `type: mysql` or `type: sqlite`                |
+| API format negotiation is boilerplate       | `$app->sendAPI($data)` auto-detects JSON vs XML from `Accept` header or `?format=` |
+| Server signature leaks tech stack           | `$app->setPoweredBy(false)` removes `X-Powered-By` entirely                        |
 
 ### The Philosophy
 
@@ -71,14 +71,14 @@
 
 ## Use Cases
 
-| Scenario | How Narciso Helps |
-|---|---|
-| **JSON API backend** | Define routes with `$app->route()`, return JSON with `$app->json()` or `$app->sendAPI()`. CORS and rate limiting built in. |
-| **Rapid prototype** | Install via Composer, write a single PHP file, run with `php -S`. Zero config. |
-| **Microservice** | Lightweight enough to deploy as a standalone service. Add security headers and rate limiting in two lines. |
-| **Simple web app with database** | Connect MySQL or SQLite with `handleDatabase()`, render views with `render()`. |
-| **API gateway / proxy** | Use the middleware pipeline to add logging, auth, and rate limiting before proxying requests. |
-| **Learning tool** | Read the ~500-line source to understand how routing, middleware, and request handling work in PHP. |
+| Scenario                         | How Narciso Helps                                                                                                          |
+| -------------------------------- | -------------------------------------------------------------------------------------------------------------------------- |
+| **JSON API backend**             | Define routes with `$app->route()`, return JSON with `$app->json()` or `$app->sendAPI()`. CORS and rate limiting built in. |
+| **Rapid prototype**              | Install via Composer, write a single PHP file, run with `php -S`. Zero config.                                             |
+| **Microservice**                 | Lightweight enough to deploy as a standalone service. Add security headers and rate limiting in two lines.                 |
+| **Simple web app with database** | Connect MySQL or SQLite with `handleDatabase()`, render views with `render()`.                                             |
+| **API gateway / proxy**          | Use the middleware pipeline to add logging, auth, and rate limiting before proxying requests.                              |
+| **Learning tool**                | Read the ~500-line source to understand how routing, middleware, and request handling work in PHP.                         |
 
 ---
 
@@ -99,23 +99,23 @@
 
 ## Advantages Over Other Tools
 
-| Aspect | Narciso | Laravel | Slim | Symfony | Handwritten |
-|---|---|---|---|---|---|
-| **Setup time** | ~10 seconds | Minutes | ~30 seconds | Minutes | Ongoing effort |
-| **Runtime dependencies** | 0 | 50+ | 5 | 80+ | 0 |
-| **Learning curve** | Low | High | Medium | High | N/A |
-| **File size (source)** | ~500 lines | 10,000s | ~2,000 | 100,000s | Varies |
-| **Database abstraction** | mysqli / SQLite3 | Eloquent | PDO | Doctrine | Custom |
-| **CORS middleware** | Built-in | Package | Package | Bundle | Custom |
-| **Rate limiting** | Built-in | Package | Package | Bundle | Custom |
-| **Security headers** | Built-in | Middleware | Package | Bundle | Custom |
-| **JSON/XML auto-detect** | Built-in | Manual | Manual | Manual | Custom |
-| **Path parameters** | `:param` | Route params | `{param}` | `{param}` | Custom |
-| **Middleware interface** | Yes | Yes | Yes | Yes | Custom |
-| **Template engine** | PHP includes | Blade | Twig/Plates | Twig | Custom |
-| **CLI tooling** | No | Artisan | No | Maker | N/A |
-| **ORM** | No | Eloquent | Optional | Doctrine | Custom |
-| **License** | Apache 2.0 | MIT | MIT | MIT | Your choice |
+| Aspect                   | Narciso          | Laravel      | Slim        | Symfony   | Handwritten    |
+| ------------------------ | ---------------- | ------------ | ----------- | --------- | -------------- |
+| **Setup time**           | ~10 seconds      | Minutes      | ~30 seconds | Minutes   | Ongoing effort |
+| **Runtime dependencies** | 0                | 50+          | 5           | 80+       | 0              |
+| **Learning curve**       | Low              | High         | Medium      | High      | N/A            |
+| **File size (source)**   | ~500 lines       | 10,000s      | ~2,000      | 100,000s  | Varies         |
+| **Database abstraction** | mysqli / SQLite3 | Eloquent     | PDO         | Doctrine  | Custom         |
+| **CORS middleware**      | Built-in         | Package      | Package     | Bundle    | Custom         |
+| **Rate limiting**        | Built-in         | Package      | Package     | Bundle    | Custom         |
+| **Security headers**     | Built-in         | Middleware   | Package     | Bundle    | Custom         |
+| **JSON/XML auto-detect** | Built-in         | Manual       | Manual      | Manual    | Custom         |
+| **Path parameters**      | `:param`         | Route params | `{param}`   | `{param}` | Custom         |
+| **Middleware interface** | Yes              | Yes          | Yes         | Yes       | Custom         |
+| **Template engine**      | PHP includes     | Blade        | Twig/Plates | Twig      | Custom         |
+| **CLI tooling**          | No               | Artisan      | No          | Maker     | N/A            |
+| **ORM**                  | No               | Eloquent     | Optional    | Doctrine  | Custom         |
+| **License**              | Apache 2.0       | MIT          | MIT         | MIT       | Your choice    |
 
 ---
 
@@ -179,67 +179,67 @@ curl http://localhost:8080/users/42
 
 Register a route handler.
 
-| Parameter | Default | Description |
-|---|---|---|
-| `$method` | — | HTTP method (GET, POST, PUT, DELETE, PATCH, etc.) |
-| `$path` | — | URL pattern with optional `:param` segments |
-| `$handler` | — | `function($app, $params)` callback |
+| Parameter  | Default | Description                                       |
+| ---------- | ------- | ------------------------------------------------- |
+| `$method`  | —       | HTTP method (GET, POST, PUT, DELETE, PATCH, etc.) |
+| `$path`    | —       | URL pattern with optional `:param` segments       |
+| `$handler` | —       | `function($app, $params)` callback                |
 
 ### `use($middleware)`
 
 Add a middleware to the pipeline.
 
-| Parameter | Default | Description |
-|---|---|---|
-| `$middleware` | — | Callable `($app, $next)` or object implementing `MiddlewareInterface` |
+| Parameter     | Default | Description                                                           |
+| ------------- | ------- | --------------------------------------------------------------------- |
+| `$middleware` | —       | Callable `($app, $next)` or object implementing `MiddlewareInterface` |
 
 ### `useSecurityHeaders(?array $headers = null)`
 
-| Flag | Default | Description |
-|---|---|---|
-| `$headers` | `null` | Custom headers array or `null` for defaults |
+| Flag       | Default | Description                                 |
+| ---------- | ------- | ------------------------------------------- |
+| `$headers` | `null`  | Custom headers array or `null` for defaults |
 
 ### `useCors(array $origins, array $methods, array $headers, bool $credentials, int $maxAge)`
 
-| Flag | Default | Description |
-|---|---|---|
-| `$origins` | `['*']` | Allowed origins |
-| `$methods` | `['GET','POST','PUT','PATCH','DELETE','OPTIONS']` | Allowed HTTP methods |
-| `$headers` | `['Content-Type','Authorization']` | Allowed request headers |
-| `$credentials` | `false` | Allow credentials |
-| `$maxAge` | `86400` | Preflight cache in seconds |
+| Flag           | Default                                           | Description                |
+| -------------- | ------------------------------------------------- | -------------------------- |
+| `$origins`     | `['*']`                                           | Allowed origins            |
+| `$methods`     | `['GET','POST','PUT','PATCH','DELETE','OPTIONS']` | Allowed HTTP methods       |
+| `$headers`     | `['Content-Type','Authorization']`                | Allowed request headers    |
+| `$credentials` | `false`                                           | Allow credentials          |
+| `$maxAge`      | `86400`                                           | Preflight cache in seconds |
 
 ### `useRateLimit(int $maxRequests, int $windowSeconds)`
 
-| Flag | Default | Description |
-|---|---|---|
-| `$maxRequests` | — | Max requests per window |
-| `$windowSeconds` | — | Window duration in seconds |
+| Flag             | Default | Description                |
+| ---------------- | ------- | -------------------------- |
+| `$maxRequests`   | —       | Max requests per window    |
+| `$windowSeconds` | —       | Window duration in seconds |
 
 ### `sendAPI($data, array $options)`
 
-| Option | Default | Description |
-|---|---|---|
-| `format` | `'json'` | `'json'` or `'xml'` |
-| `root` | `'response'` | XML root tag |
-| `xmlItemName` | `'item'` | XML list item tag |
-| `statusCode` | `200` | HTTP status code |
+| Option        | Default      | Description         |
+| ------------- | ------------ | ------------------- |
+| `format`      | `'json'`     | `'json'` or `'xml'` |
+| `root`        | `'response'` | XML root tag        |
+| `xmlItemName` | `'item'`     | XML list item tag   |
+| `statusCode`  | `200`        | HTTP status code    |
 
 ### `setPoweredBy($value)`
 
-| Flag | Default | Description |
-|---|---|---|
-| `$value` | — | `false` to remove, `''` for blank, `string` for custom, `null` to leave default |
+| Flag     | Default | Description                                                                     |
+| -------- | ------- | ------------------------------------------------------------------------------- |
+| `$value` | —       | `false` to remove, `''` for blank, `string` for custom, `null` to leave default |
 
 ### `handleDatabase(array $config)`
 
-| Key | Default | Description |
-|---|---|---|
-| `type` | — | `'mysql'` or `'sqlite'` |
-| `host` | `'localhost'` | MySQL host |
-| `database` | — | Database name (MySQL) or file path (SQLite) |
-| `username` | — | MySQL username |
-| `password` | — | MySQL password |
+| Key        | Default       | Description                                 |
+| ---------- | ------------- | ------------------------------------------- |
+| `type`     | —             | `'mysql'` or `'sqlite'`                     |
+| `host`     | `'localhost'` | MySQL host                                  |
+| `database` | —             | Database name (MySQL) or file path (SQLite) |
+| `username` | —             | MySQL username                              |
+| `password` | —             | MySQL password                              |
 
 ---
 
@@ -332,10 +332,10 @@ jobs:
 
 ## Development
 
-| Prerequisite | Version | Purpose |
-|---|---|---|
-| PHP | 7.4+ | Runtime |
-| Composer | 2.x | Dependency management |
+| Prerequisite | Version | Purpose               |
+| ------------ | ------- | --------------------- |
+| PHP          | 7.4+    | Runtime               |
+| Composer     | 2.x     | Dependency management |
 
 ```bash
 git clone https://github.com/marcuwynu23/narciso.git
