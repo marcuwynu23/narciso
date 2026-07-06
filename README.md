@@ -2,29 +2,120 @@
 
 # Narciso
 
-[![CI](https://github.com/marcuwynu23/narciso/actions/workflows/ci.yml/badge.svg)](https://github.com/marcuwynu23/narciso/actions/workflows/ci.yml)
-[![GitHub license](https://img.shields.io/github/license/marcuwynu23/narciso)](https://github.com/marcuwynu23/narciso/blob/main/LICENSE)
-[![GitHub stars](https://img.shields.io/github/stars/marcuwynu23/narciso)](https://github.com/marcuwynu23/narciso/stargazers)
-[![GitHub issues](https://img.shields.io/github/issues/marcuwynu23/narciso)](https://github.com/marcuwynu23/narciso/issues)
+<a href="https://packagist.org/packages/marcuwynu23/narciso"><img src="https://img.shields.io/packagist/v/marcuwynu23/narciso" alt="Packagist"></a>
+<a href="LICENSE"><img src="https://img.shields.io/github/license/marcuwynu23/narciso" alt="License"></a>
+<a href="https://github.com/marcuwynu23/narciso/actions/workflows/ci.yml"><img src="https://github.com/marcuwynu23/narciso/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
+<a href="https://github.com/marcuwynu23/narciso/stargazers"><img src="https://img.shields.io/github/stars/marcuwynu23/narciso" alt="Stars"></a>
+<img src="https://img.shields.io/packagist/php-version/marcuwynu23/narciso" alt="PHP version">
+
+<strong>Lightweight PHP web library.</strong> Routing, middleware, CORS, rate limiting, security headers, and database — no framework required.
+
+➡️ **[Read the full user guide →](USER-GUIDE.md)**
 
 </div>
 
-Narciso is a lightweight web library built on top of native PHP, inspired by **FastAPI** and **Flask**. It gives you a simple, expressive API for routing, middlewares, CORS, rate limiting, security headers, and database access—so you can build APIs and web apps quickly without a heavy framework.
+---
 
-**Packagist:** https://packagist.org/packages/marcuwynu23/narciso
+## Table of Contents
+
+- [What Is Narciso?](#what-is-narciso)
+- [Use Cases](#use-cases)
+- [Benefits](#benefits-for-developers)
+- [Advantages Over Other Tools](#advantages-over-other-tools)
+- [User Guide](USER-GUIDE.md)
+- [Installation](#installation)
+- [Quick Start](#quick-start)
+- [API Reference](#api-reference)
+- [Configuration](#configuration)
+- [Example Output](#example-output)
+- [CI/CD Integration](#cicd-integration)
+- [Development](#development)
+- [Architecture](#architecture)
+- [Contributing](CONTRIBUTING.md)
+- [License](#license)
 
 ---
 
-## Features
+## What Is Narciso?
 
-- **Routing** — Define routes with path parameters (e.g. `/users/:id`), multiple HTTP methods.
-- **Middlewares** — Add middlewares in order (security, CORS, rate limit, or your own). User-friendly `use()` API.
-- **Easy database integration** — One config for MySQL or SQLite; `$app->db` ready to use.
-- **Cross-Origin (CORS)** — Configurable origins, methods, and headers; no more guessing.
-- **Rate limiting** — Built-in per-IP rate limit middleware; plug in Redis later for production.
-- **Security** — Optional security headers (X-Frame-Options, X-Content-Type-Options, etc.) and secure defaults.
-- **Technology signature** — Make the stack silent or changeable: remove `X-Powered-By`, set it blank, or fake it (e.g. "Express") so the server type is obfuscated.
-- **HTTP** — JSON requests/responses, redirects, views, session handling.
+**Narciso** is a lightweight PHP web library built on top of native PHP, inspired by **FastAPI** and **Flask**. It gives you a simple, expressive API for routing, middlewares, CORS, rate limiting, security headers, and database access — so you can build APIs and web apps quickly without a heavy framework.
+
+### What It Does
+
+- **Route** — Map HTTP methods and URL patterns (including path parameters like `/users/:id`) to handler callbacks
+- **Protect** — Add security headers, CORS, and rate limiting with one-line method calls
+- **Connect** — Configure MySQL or SQLite in a single config array; `$app->db` is ready in every route
+- **Respond** — Return JSON, XML (auto-detected from query/header), or render PHP views
+- **Obfuscate** — Hide or fake the `X-Powered-By` header to keep the server technology private
+- **Extend** — Add custom middleware via a callable or the `MiddlewareInterface`
+- **Session** — Start PHP sessions with `handleSession()`
+
+### Why Use It?
+
+| Problem | How Narciso Solves It |
+|---|---|
+| Heavy frameworks require boilerplate | Narciso is ~500 lines of PHP; drop it in and start coding |
+| CORS and security headers are tedious | One call: `$app->useCors([...])`, `$app->useSecurityHeaders()` |
+| Rate limiting needs middleware setup | `$app->useRateLimit(100, 60)` — 1 line, in-memory, per-IP |
+| Database config varies between MySQL/SQLite | Single `handleDatabase([...])` with `type: mysql` or `type: sqlite` |
+| API format negotiation is boilerplate | `$app->sendAPI($data)` auto-detects JSON vs XML from `Accept` header or `?format=` |
+| Server signature leaks tech stack | `$app->setPoweredBy(false)` removes `X-Powered-By` entirely |
+
+### The Philosophy
+
+1. **Minimal setup, maximum value.** A working API server in 10 lines of code.
+2. **Your process stays yours.** No forced directory structure, no service container, no DI. Just PHP.
+3. **Native-first.** Built on `mysqli`, `SQLite3`, and native PHP sessions — no runtime dependencies.
+
+---
+
+## Use Cases
+
+| Scenario | How Narciso Helps |
+|---|---|
+| **JSON API backend** | Define routes with `$app->route()`, return JSON with `$app->json()` or `$app->sendAPI()`. CORS and rate limiting built in. |
+| **Rapid prototype** | Install via Composer, write a single PHP file, run with `php -S`. Zero config. |
+| **Microservice** | Lightweight enough to deploy as a standalone service. Add security headers and rate limiting in two lines. |
+| **Simple web app with database** | Connect MySQL or SQLite with `handleDatabase()`, render views with `render()`. |
+| **API gateway / proxy** | Use the middleware pipeline to add logging, auth, and rate limiting before proxying requests. |
+| **Learning tool** | Read the ~500-line source to understand how routing, middleware, and request handling work in PHP. |
+
+---
+
+## Benefits for Developers
+
+- **~10 second setup** — `composer require marcuwynu23/narciso`
+- **No runtime dependencies** — Zero Composer dependencies at runtime
+- **Familiar API** — Inspired by Flask and FastAPI; route handlers receive `($app, $params)`
+- **Path parameters** — `/users/:id` syntax like Express.js
+- **Middleware onion** — Add as many middlewares as needed; they wrap in order
+- **JSON/XML auto-detection** — `sendAPI()` reads `Accept` header or `?format=` query param
+- **Built-in security** — Security headers, CORS, rate limiting ship with the library
+- **Technology obfuscation** — Remove or fake `X-Powered-By` with `setPoweredBy()`
+- **PHP 7.4+ compatible** — Works on legacy and modern PHP
+- **Fully tested** — PHPUnit suite with 36+ tests covering routing, middleware, database, and API
+
+---
+
+## Advantages Over Other Tools
+
+| Aspect | Narciso | Laravel | Slim | Symfony | Handwritten |
+|---|---|---|---|---|---|
+| **Setup time** | ~10 seconds | Minutes | ~30 seconds | Minutes | Ongoing effort |
+| **Runtime dependencies** | 0 | 50+ | 5 | 80+ | 0 |
+| **Learning curve** | Low | High | Medium | High | N/A |
+| **File size (source)** | ~500 lines | 10,000s | ~2,000 | 100,000s | Varies |
+| **Database abstraction** | mysqli / SQLite3 | Eloquent | PDO | Doctrine | Custom |
+| **CORS middleware** | Built-in | Package | Package | Bundle | Custom |
+| **Rate limiting** | Built-in | Package | Package | Bundle | Custom |
+| **Security headers** | Built-in | Middleware | Package | Bundle | Custom |
+| **JSON/XML auto-detect** | Built-in | Manual | Manual | Manual | Custom |
+| **Path parameters** | `:param` | Route params | `{param}` | `{param}` | Custom |
+| **Middleware interface** | Yes | Yes | Yes | Yes | Custom |
+| **Template engine** | PHP includes | Blade | Twig/Plates | Twig | Custom |
+| **CLI tooling** | No | Artisan | No | Maker | N/A |
+| **ORM** | No | Eloquent | Optional | Doctrine | Custom |
+| **License** | Apache 2.0 | MIT | MIT | MIT | Your choice |
 
 ---
 
@@ -34,9 +125,19 @@ Narciso is a lightweight web library built on top of native PHP, inspired by **F
 composer require marcuwynu23/narciso
 ```
 
+Requires PHP 7.4+ and the `json` extension. For MySQL use, install `php-mysql`. For SQLite, install `php-sqlite3`.
+
+**Verify:**
+
+```bash
+php -r "require 'vendor/autoload.php'; echo class_exists(Marcuwynu23\\\Narciso\\\Application::class) ? 'OK' : 'FAIL';"
+```
+
 ---
 
-## Quick start (Flask/FastAPI style)
+## Quick Start
+
+Create `index.php`:
 
 ```php
 <?php
@@ -45,283 +146,243 @@ require_once __DIR__ . '/vendor/autoload.php';
 use Marcuwynu23\Narciso\Application;
 
 $app = new Application();
-$app->setViewPath(__DIR__ . '/views');
 
-// Optional: hide or change technology signature (X-Powered-By)
-$app->setPoweredBy(false);   // silent, or setPoweredBy('Express') etc.
-
-// Optional: session
-$app->handleSession();
-
-// Middlewares (order matters: first added = first run)
-$app->useSecurityHeaders();                    // Security headers on every response
-$app->useCors(['*']);                          // CORS: allow all origins (or list specific origins)
-$app->useRateLimit(60, 60);                    // 60 requests per 60 seconds per IP
-
-// Database: one call, then use $app->db everywhere
-$app->handleDatabase([
-    'type'     => 'mysql',
-    'host'     => 'localhost',
-    'database' => 'mydb',
-    'username' => 'user',   // or 'user'
-    'password' => 'secret',
-]);
-
-// Routes (path params like FastAPI/Flask)
 $app->route('GET', '/', function ($app) {
-    $app->render('/home/index.view');
-});
-
-$app->route('GET', '/json', function ($app) {
     $app->json(['message' => 'Hello World']);
 });
 
 $app->route('GET', '/users/:id', function ($app, $params) {
-    $id = $params['id'] ?? null;
-    $app->json(['user_id' => $id]);
+    $app->json(['user_id' => $params['id']]);
 });
 
-// Run the app (dispatches request through middlewares and routes)
 $app->run();
 ```
 
----
+Run it:
 
-## Middlewares (user-friendly)
-
-Add middlewares with `$app->use(...)` or the built-in helpers. They run in the order you add them.
-
-### Built-in middlewares
-
-| Method | Description |
-|--------|-------------|
-| `useSecurityHeaders(?array $headers)` | Sends security headers (X-Content-Type-Options, X-Frame-Options, etc.). Pass `null` for defaults or your own array. |
-| `useCors($origins, $methods, $headers, $credentials, $maxAge)` | Configurable CORS. See [CORS](#cross-origin-cors) below. |
-| `useRateLimit($maxRequests, $windowSeconds)` | Rate limit per client IP (in-memory; use Redis for multi-process). |
-
-### Custom middleware
-
-**Option 1 — Implement interface (recommended):**
-
-```php
-use Marcuwynu23\Narciso\Middleware\MiddlewareInterface;
-
-class MyMiddleware implements MiddlewareInterface {
-    public function handle(callable $next) {
-        // Before request
-        $result = $next();
-        // After request (if $next returns)
-        return $result;
-    }
-}
-
-$app->use(new MyMiddleware());
+```bash
+php -S localhost:8080 index.php
 ```
 
-**Option 2 — Callable (Flask-like):**
+Test it:
 
-```php
-$app->use(function ($app, $next) {
-    // Before
-    $result = $next();
-    // After
-    return $result;
-});
+```bash
+curl http://localhost:8080/
+curl http://localhost:8080/users/42
 ```
 
 ---
 
-## Database
+## API Reference
 
-One-time setup; then use `$app->db` in your routes.
+### `route(string $method, string $path, callable $handler)`
 
-**MySQL:**
+Register a route handler.
+
+| Parameter | Default | Description |
+|---|---|---|
+| `$method` | — | HTTP method (GET, POST, PUT, DELETE, PATCH, etc.) |
+| `$path` | — | URL pattern with optional `:param` segments |
+| `$handler` | — | `function($app, $params)` callback |
+
+### `use($middleware)`
+
+Add a middleware to the pipeline.
+
+| Parameter | Default | Description |
+|---|---|---|
+| `$middleware` | — | Callable `($app, $next)` or object implementing `MiddlewareInterface` |
+
+### `useSecurityHeaders(?array $headers = null)`
+
+| Flag | Default | Description |
+|---|---|---|
+| `$headers` | `null` | Custom headers array or `null` for defaults |
+
+### `useCors(array $origins, array $methods, array $headers, bool $credentials, int $maxAge)`
+
+| Flag | Default | Description |
+|---|---|---|
+| `$origins` | `['*']` | Allowed origins |
+| `$methods` | `['GET','POST','PUT','PATCH','DELETE','OPTIONS']` | Allowed HTTP methods |
+| `$headers` | `['Content-Type','Authorization']` | Allowed request headers |
+| `$credentials` | `false` | Allow credentials |
+| `$maxAge` | `86400` | Preflight cache in seconds |
+
+### `useRateLimit(int $maxRequests, int $windowSeconds)`
+
+| Flag | Default | Description |
+|---|---|---|
+| `$maxRequests` | — | Max requests per window |
+| `$windowSeconds` | — | Window duration in seconds |
+
+### `sendAPI($data, array $options)`
+
+| Option | Default | Description |
+|---|---|---|
+| `format` | `'json'` | `'json'` or `'xml'` |
+| `root` | `'response'` | XML root tag |
+| `xmlItemName` | `'item'` | XML list item tag |
+| `statusCode` | `200` | HTTP status code |
+
+### `setPoweredBy($value)`
+
+| Flag | Default | Description |
+|---|---|---|
+| `$value` | — | `false` to remove, `''` for blank, `string` for custom, `null` to leave default |
+
+### `handleDatabase(array $config)`
+
+| Key | Default | Description |
+|---|---|---|
+| `type` | — | `'mysql'` or `'sqlite'` |
+| `host` | `'localhost'` | MySQL host |
+| `database` | — | Database name (MySQL) or file path (SQLite) |
+| `username` | — | MySQL username |
+| `password` | — | MySQL password |
+
+---
+
+## Configuration
+
+Narciso uses method calls, not config files. Configuration precedence:
+
+1. Method arguments (highest)
+2. Built-in defaults (lowest)
 
 ```php
-$app->handleDatabase([
-    'type'     => 'mysql',
-    'host'     => 'localhost',
-    'database' => 'mydb',
-    'username' => 'user',   // or 'user'
-    'password' => 'pass',
-]);
-// $app->db is mysqli
-```
-
-**SQLite:**
-
-```php
+$app = new Application();
+$app->setViewPath(__DIR__ . '/views');
+$app->setPoweredBy(false);
+$app->handleSession();
+$app->useSecurityHeaders();
+$app->useCors(['https://myapp.com']);
+$app->useRateLimit(60, 60);
 $app->handleDatabase([
     'type'     => 'sqlite',
     'database' => __DIR__ . '/data/app.db',
 ]);
-// $app->db is SQLite3
 ```
 
 ---
 
-## Cross-Origin (CORS)
+## Example Output
 
-Use `useCors()` for full control (recommended over the legacy `handleCORS()`):
+### JSON Response
 
-```php
-// Allow all origins (default)
-$app->useCors();
+```json
+HTTP/1.1 200 OK
+Content-Type: application/json
 
-// Restrict to your frontend (PHP 8+ named args; or pass by position)
-$app->useCors(
-    ['https://app.example.com', 'http://localhost:3000'],
-    ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-    ['Content-Type', 'Authorization'],
-    true,   // credentials
-    86400   // maxAge
-);
+{"message":"Hello World"}
+```
+
+### XML Response
+
+```xml
+HTTP/1.1 200 OK
+Content-Type: application/xml
+
+<?xml version="1.0"?>
+<response>
+  <message>Hello World</message>
+</response>
+```
+
+### Rate Limited Response
+
+```http
+HTTP/1.1 429 Too Many Requests
+Retry-After: 43
+Content-Type: application/json
+
+{"error":"Rate limit exceeded. Try again in 43 seconds."}
 ```
 
 ---
 
-## Rate limiting
+## CI/CD Integration
 
-Built-in per-IP rate limit (in-memory). For production with multiple processes, replace with a Redis-backed middleware.
+### GitHub Actions
 
-```php
-$app->useRateLimit(100, 60);   // 100 requests per 60 seconds per IP
-```
+```yaml
+name: CI
 
-When exceeded, responses are `429 Too Many Requests` with a `Retry-After` header.
+on: [push, pull_request]
 
----
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        php: [8.1, 8.2, 8.3, 8.4]
 
-## Security
-
-- **Security headers** — `$app->useSecurityHeaders()` sends headers like:
-  - `X-Content-Type-Options: nosniff`
-  - `X-Frame-Options: SAMEORIGIN`
-  - `X-XSS-Protection: 1; mode=block`
-  - `Referrer-Policy`, `Permissions-Policy`
-- **Custom headers:** `$app->useSecurityHeaders(['X-Custom' => 'value']);`
-- **CORS** — Prefer `useCors()` with explicit origins instead of `*` when using credentials.
-- **Database** — Use parameterized queries with `$app->db`; never concatenate user input into SQL.
-- **Technology signature (X-Powered-By)** — Like Express’s `app.disable('x-powered-by')`: call `$app->setPoweredBy(false)` to remove the header (silent/obfuscated), `$app->setPoweredBy('')` for a blank value, or `$app->setPoweredBy('Express')` to send a custom value so the server type is not revealed.
-
----
-
-## Technology signature (X-Powered-By)
-
-Control or hide the `X-Powered-By` header so the server technology (e.g. PHP) is **silent** or **changeable** (Express-style):
-
-```php
-// Remove the header (obfuscated / silent)
-$app->setPoweredBy(false);
-
-// Send a blank value
-$app->setPoweredBy('');
-
-// Send a custom value (e.g. pretend another stack)
-$app->setPoweredBy('Express');
-
-// Leave default (don't touch; default behavior)
-$app->setPoweredBy(null);  // or omit
-```
-
-Applied automatically at the start of `run()`.
-
----
-
-## Routing and path parameters
-
-Routes support **path parameters** (e.g. `/users/:id`). Your callback receives `($app, $params)`.
-
-```php
-$app->route('GET', '/posts/:slug', function ($app, $params) {
-    $slug = $params['slug'];
-    $app->json(['slug' => $slug]);
-});
+    steps:
+      - uses: actions/checkout@v4
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          tools: composer:v2
+      - run: composer validate
+      - run: composer install --prefer-dist --no-progress
+      - run: vendor/bin/phpunit
 ```
 
 ---
 
-## API response (JSON or XML)
+## Development
 
-Use `$app->sendAPI()` to respond as **JSON** or **XML** (legacy). Format can be forced or **auto-detected** from query param (`?format=json` or `?format=xml`) or `Accept` header.
+| Prerequisite | Version | Purpose |
+|---|---|---|
+| PHP | 7.4+ | Runtime |
+| Composer | 2.x | Dependency management |
 
-```php
-// Auto-detect from ?format=xml or Accept: application/xml
-$app->route('GET', '/api/users', function ($app) {
-    $app->sendAPI(['users' => [['id' => 1, 'name' => 'Alice']]]);
-});
-
-// Force JSON
-$app->sendAPI($data, ['format' => 'json']);
-
-// Force XML (legacy)
-$app->sendAPI($data, ['format' => 'xml']);
-
-// Options: root tag, list item tag, status code
-$app->sendAPI($data, [
-    'format'       => 'xml',
-    'root'         => 'data',
-    'xmlItemName'  => 'user',
-    'statusCode'   => 200,
-]);
-```
-
-- **Default format** is JSON; use `?format=xml` or `Accept: application/xml` for XML.
-- **arrayToXml** is public for custom XML: `$app->arrayToXml($array, 'rootTag', 'itemTag')`.
-- **getPreferredApiFormat()** returns `'json'` or `'xml'` from the current request.
-
----
-
-## How to run
-
-**PHP built-in server:**
-
-```sh
-php -S localhost:8080 -t <entry_point_directory>
-```
-
-**With .autofile script:**
-
-```sh
-+ php -S localhost:8080 -t <entry_point_directory>
-```
-
-Then run:
-
-```sh
-auto
-```
-
----
-
-## Inspiration
-
-Narciso is inspired by the myth of Narcissus and by the simplicity of **FastAPI** and **Flask**. It focuses on clarity and minimal setup: middlewares, database, CORS, rate limit, and security are a few method calls away, so you can spend time on your app instead of framework configuration.
-
----
-
-## Testing
-
-Tests are test-driven and cover all main functionality: routing (exact and path params), middlewares (security, CORS, rate limit), `setPoweredBy`, JSON/render responses, 404, database (SQLite), and custom middlewares.
-
-**Run the test suite:**
-
-```sh
+```bash
+git clone https://github.com/marcuwynu23/narciso.git
+cd narciso
 composer install
 composer test
 ```
 
-Or directly:
+### Project Structure
 
-```sh
-vendor/bin/phpunit
-php test/run_tests.php
 ```
+narciso/
+├── src/Application.php          # Main class (~500 lines)
+├── src/Middleware/
+│   ├── MiddlewareInterface.php  # Middleware contract
+│   ├── CorsMiddleware.php      # CORS handler
+│   ├── RateLimitMiddleware.php # Per-IP rate limiter
+│   └── SecurityHeadersMiddleware.php # Security headers
+├── test/                       # PHPUnit test suite
+│   ├── TestCase.php
+│   ├── ApplicationTest.php     # 26 tests
+│   └── MiddlewareTest.php      # 10 tests
+├── samples/                    # Example applications
+│   ├── 01_basic_routing.php
+│   └── ...
+└── docs/                       # Documentation website
+```
+
+---
+
+## Architecture
+
+1. **Application** is the central class — it holds routes, middleware config, database config, and session state
+2. **Routes** are registered as `(method, pattern, handler)` tuples. Path parameters (`:param`) are converted to regex with named groups
+3. **Middleware pipeline** is an onion-wrapped array. Each middleware calls `$next()` to pass control inward
+4. **Request dispatch** happens in `run()`: middleware stack executes first, then route matching, then the matched handler
+5. **Database** connections are lazy — created on first access via `$app->db` magic getter
+6. **API format** detection checks `?format=` query param first, then `Accept` header, then defaults to JSON
 
 ---
 
 ## Contributing
 
-Contributions are welcome. Open an issue or submit a pull request.
+See [CONTRIBUTING.md](CONTRIBUTING.md) for full details — coding standards, commit conventions, PR process, and more.
 
-Happy coding!
+---
+
+## License
+
+Narciso is open source under the [Apache License, Version 2.0](LICENSE).
