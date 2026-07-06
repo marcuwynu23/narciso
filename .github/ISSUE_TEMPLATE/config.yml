@@ -1,0 +1,8 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Documentation
+    url: https://narciso.marcuwynu.space/
+    about: Check the documentation first
+  - name: Discussions
+    url: https://github.com/marcuwynu23/narciso/discussions
+    about: Ask questions and discuss ideas
