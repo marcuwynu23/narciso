@@ -138,4 +138,89 @@ final class MiddlewareTest extends TestCase
 		$m = new RateLimitMiddleware(60, 60);
 		$this->assertInstanceOf(\Marcuwynu23\Narciso\Middleware\MiddlewareInterface::class, $m);
 	}
+
+	// --- Additional edge case tests ---
+
+	public function testCorsMiddlewareWithNoOriginHeader(): void
+	{
+		unset($_SERVER['HTTP_ORIGIN']);
+		$m = new CorsMiddleware(['https://example.com']);
+		$called = false;
+		$m->handle(function () use (&$called) { $called = true; });
+		$this->assertTrue($called);
+	}
+
+	public function testCorsMiddlewareWithCredentialsTrue(): void
+	{
+		$_SERVER['HTTP_ORIGIN'] = 'https://app.com';
+		$m = new CorsMiddleware(['https://app.com'], ['GET'], ['X-Custom'], true, 3600);
+		$called = false;
+		$m->handle(function () use (&$called) { $called = true; });
+		$this->assertTrue($called);
+	}
+
+	public function testCorsMiddlewareWithMaxAgeNull(): void
+	{
+		$_SERVER['HTTP_ORIGIN'] = 'https://app.com';
+		$m = new CorsMiddleware(['https://app.com'], ['GET'], ['X-Custom'], false, null);
+		$called = false;
+		$m->handle(function () use (&$called) { $called = true; });
+		$this->assertTrue($called);
+	}
+
+	public function testRateLimitMiddlewareWithXForwardedFor(): void
+	{
+		$_SERVER['HTTP_X_FORWARDED_FOR'] = '10.0.0.1, 10.0.0.2';
+		$m = new RateLimitMiddleware(5, 60);
+		$called = false;
+		$m->handle(function () use (&$called) { $called = true; });
+		$this->assertTrue($called);
+	}
+
+	public function testRateLimitMiddlewareWindowExpiry(): void
+	{
+		$m = new RateLimitMiddleware(1, 1);
+		$called1 = false;
+		$m->handle(function () use (&$called1) { $called1 = true; });
+		$this->assertTrue($called1);
+
+		// Second call within window should be blocked
+		$called2 = false;
+		$m->handle(function () use (&$called2) { $called2 = true; });
+		$this->assertFalse($called2);
+
+		// Reset for clean state
+		RateLimitMiddleware::resetStore();
+	}
+
+	public function testRateLimitMiddlewareResetStore(): void
+	{
+		RateLimitMiddleware::resetStore();
+		$m = new RateLimitMiddleware(1, 60);
+		$called = false;
+		$m->handle(function () use (&$called) { $called = true; });
+		$this->assertTrue($called);
+	}
+
+	public function testSecurityHeadersMiddlewareDefaultHeadersCount(): void
+	{
+		$m = new SecurityHeadersMiddleware();
+		$called = false;
+		$m->handle(function () use (&$called) { $called = true; });
+		$this->assertTrue($called);
+	}
+
+	public function testSecurityHeadersMiddlewareCustomHeadersOverride(): void
+	{
+		$app = new Application();
+		$app->setViewPath(__DIR__ . '/../samples/views');
+		$app->useSecurityHeaders(['X-Content-Type-Options' => 'custom-value']);
+		$app->route('GET', '/', function ($app) {
+			$app->json([]);
+		});
+		$this->setRequest('GET', '/');
+		[, , $headers] = $this->runApp($app);
+		$this->assertSame('custom-value', $headers['X-Content-Type-Options'] ?? null);
+		$this->assertArrayNotHasKey('X-Frame-Options', $headers);
+	}
 }
