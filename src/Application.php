@@ -185,7 +185,11 @@ final class Application
 		$database = $config['database'] ?? 'test';
 
 		if ($type === 'mysql') {
-			$db = new \mysqli($host, $user, $password, $database);
+			try {
+				$db = new \mysqli($host, $user, $password, $database);
+			} catch (\Throwable $e) {
+				throw new \RuntimeException('Database connection failed: ' . $e->getMessage(), 0, $e);
+			}
 			if ($db->connect_error) {
 				throw new \RuntimeException('Database connection failed: ' . $db->connect_error);
 			}
